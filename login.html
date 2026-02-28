@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lexis — Giriş Yap</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0a0b0d;--surface:#111316;--surface2:#191c22;--border:#242830;--accent:#c9a84c;--accent2:#e8c97a;--text:#ede9e0;--muted:#6b6f7a;--danger:#e05555;--ok:#4caf82}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;display:grid;grid-template-columns:1fr 1fr;min-height:100vh}
+.lang-toggle{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:20px;overflow:hidden;position:absolute;top:24px;right:24px;z-index:10}
+.lang-btn{padding:5px 13px;font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .2s;letter-spacing:.5px}
+.lang-btn.active{background:var(--accent);color:#0a0b0d;font-weight:600}
+.left-panel{position:relative;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;padding:48px;overflow:hidden}
+.panel-bg{position:absolute;inset:0;z-index:0}
+.panel-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(201,168,76,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(201,168,76,.04) 1px,transparent 1px);background-size:60px 60px}
+.panel-glow{position:absolute;bottom:-100px;left:-100px;width:500px;height:500px;background:radial-gradient(ellipse,rgba(201,168,76,.07),transparent 70%);pointer-events:none}
+.left-content{position:relative;z-index:1;flex:1;display:flex;flex-direction:column;justify-content:space-between}
+.left-logo{font-family:'Playfair Display',serif;font-size:22px;color:var(--accent);letter-spacing:1.5px;font-weight:700;text-decoration:none;display:block}
+.left-hero{flex:1;display:flex;flex-direction:column;justify-content:center;padding:48px 0}
+.left-tag{font-family:'DM Mono',monospace;font-size:10px;color:var(--accent);letter-spacing:2px;margin-bottom:20px}
+.left-title{font-family:'Playfair Display',serif;font-size:clamp(32px,3.5vw,48px);line-height:1.1;font-weight:700;margin-bottom:20px}
+.left-title em{font-style:italic;color:var(--accent)}
+.left-desc{font-size:14px;color:var(--muted);line-height:1.7;max-width:360px;font-weight:300;margin-bottom:40px}
+.feat-list{display:flex;flex-direction:column;gap:14px}
+.feat-item{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted)}
+.feat-item::before{content:'';width:6px;height:6px;border-radius:50%;background:var(--accent);flex-shrink:0}
+.left-footer{font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);letter-spacing:.5px}
+.right-panel{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;min-height:100vh;position:relative}
+.form-wrap{width:100%;max-width:400px}
+.auth-tabs{display:flex;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:4px;margin-bottom:36px}
+.auth-tab{flex:1;padding:10px;text-align:center;font-size:13px;font-family:'DM Sans',sans-serif;color:var(--muted);cursor:pointer;border-radius:6px;transition:all .2s;border:none;background:transparent}
+.auth-tab.active{background:var(--accent);color:#0a0b0d;font-weight:600}
+.form-header{margin-bottom:32px}
+.form-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;margin-bottom:6px}
+.form-subtitle{font-size:13px;color:var(--muted)}
+.form-subtitle a{color:var(--accent);text-decoration:none}
+.field{margin-bottom:18px}
+.field label{display:block;font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);letter-spacing:.5px;margin-bottom:8px}
+.field input,.field select{width:100%;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:12px 16px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border .2s,box-shadow .2s}
+.field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,168,76,.1)}
+.field input::placeholder{color:var(--muted)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.pw-wrap{position:relative}
+.pw-wrap input{padding-right:44px}
+.pw-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);cursor:pointer;font-size:16px;line-height:1;transition:color .2s}
+.pw-toggle:hover{color:var(--accent)}
+.field-help{display:flex;justify-content:flex-end;margin-top:6px}
+.field-help a{font-size:12px;color:var(--muted);text-decoration:none;font-family:'DM Mono',monospace;transition:color .2s}
+.field-help a:hover{color:var(--accent)}
+.pw-strength{margin-top:8px;display:none}
+.pw-strength.show{display:block}
+.pw-bars{display:flex;gap:4px;margin-bottom:4px}
+.pw-bar{height:3px;flex:1;background:var(--border);border-radius:2px;transition:background .3s}
+.pw-bar.weak{background:var(--danger)}.pw-bar.medium{background:var(--accent)}.pw-bar.strong{background:var(--ok)}
+.pw-label{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.5px}
+.check-row{display:flex;align-items:flex-start;gap:10px;margin-bottom:18px}
+.check-row input[type="checkbox"]{width:16px;height:16px;accent-color:var(--accent);margin-top:2px;flex-shrink:0;cursor:pointer}
+.check-row label{font-size:13px;color:var(--muted);cursor:pointer;line-height:1.5}
+.check-row label a{color:var(--accent);text-decoration:none}
+.submit-btn{width:100%;padding:14px;background:var(--accent);color:#0a0b0d;border:none;border-radius:8px;font-size:14px;font-weight:600;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s;letter-spacing:.3px;position:relative;overflow:hidden}
+.submit-btn:hover{background:var(--accent2);transform:translateY(-1px);box-shadow:0 8px 24px rgba(201,168,76,.25)}
+.submit-btn.loading .btn-text{opacity:0}
+.submit-btn .btn-spinner{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .2s}
+.submit-btn.loading .btn-spinner{opacity:1}
+.spinner{width:18px;height:18px;border:2px solid rgba(10,11,13,.3);border-top-color:#0a0b0d;border-radius:50%;animation:spin .7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.or-divider{display:flex;align-items:center;gap:12px;margin:20px 0}
+.or-line{flex:1;height:1px;background:var(--border)}
+.or-text{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:1px}
+.social-btns{display:flex;gap:10px}
+.social-btn{flex:1;padding:11px;background:var(--surface);border:1px solid var(--border);border-radius:8px;color:var(--muted);font-size:13px;font-family:'DM Sans',sans-serif;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px}
+.social-btn:hover{border-color:var(--accent);color:var(--text)}
+.form-alert{display:none;padding:12px 16px;border-radius:8px;font-size:13px;margin-bottom:16px;border:1px solid}
+.form-alert.error{background:rgba(224,85,85,.08);border-color:rgba(224,85,85,.3);color:var(--danger)}
+.form-alert.success{background:rgba(76,175,130,.08);border-color:rgba(76,175,130,.3);color:var(--ok)}
+.form-alert.show{display:block}
+.plan-badge{display:flex;align-items:center;gap:10px;padding:12px 16px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.2);border-radius:8px;margin-bottom:24px;display:none}
+.plan-badge.show{display:flex}
+.plan-badge span{font-size:13px;color:var(--accent);font-family:'DM Mono',monospace}
+.register-only-row{display:none}
+.register-only-row.show{display:grid}
+.reg-steps{display:none;gap:8px;margin-bottom:28px}
+.reg-steps.show{display:flex}
+.reg-step{flex:1;height:3px;border-radius:2px;background:var(--border);transition:background .3s}
+.reg-step.done{background:var(--ok)}.reg-step.active{background:var(--accent)}
+.back-link{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--muted);text-decoration:none;font-family:'DM Mono',monospace;margin-bottom:32px;transition:color .2s}
+.back-link:hover{color:var(--accent)}
+@media(max-width:768px){body{grid-template-columns:1fr;grid-template-rows:auto 1fr}.left-panel{padding:32px;min-height:auto}.left-hero{padding:32px 0}.right-panel{padding:32px 20px}}
+</style>
+</head>
+<body>
+
+<div class="left-panel">
+  <div class="panel-bg"><div class="panel-grid"></div><div class="panel-glow"></div></div>
+  <div class="left-content">
+    <a href="index.html" class="left-logo">LEXIS</a>
+    <div class="left-hero">
+      <div class="left-tag" data-i18n="left_tag"></div>
+      <h2 class="left-title"><span data-i18n="left_h1"></span><br><em data-i18n="left_h2"></em></h2>
+      <p class="left-desc" data-i18n="left_desc"></p>
+      <div class="feat-list">
+        <div class="feat-item" data-i18n="lf1"></div>
+        <div class="feat-item" data-i18n="lf2"></div>
+        <div class="feat-item" data-i18n="lf3"></div>
+        <div class="feat-item" data-i18n="lf4"></div>
+        <div class="feat-item" data-i18n="lf5"></div>
+      </div>
+    </div>
+    <div class="left-footer" data-i18n="left_footer"></div>
+  </div>
+</div>
+
+<div class="right-panel">
+  <div class="lang-toggle">
+    <button class="lang-btn active" id="btn-tr" onclick="setLang('tr')">TR</button>
+    <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+  </div>
+
+  <div class="form-wrap">
+    <a href="index.html" class="back-link" data-i18n="back_home"></a>
+
+    <div class="plan-badge" id="plan-badge">
+      ✦ <span data-i18n="plan_selected"></span> <strong id="plan-name-badge">Pro</strong>
+    </div>
+
+    <div class="auth-tabs">
+      <button class="auth-tab active" id="tab-login" onclick="switchAuth('login')" data-i18n="tab_login"></button>
+      <button class="auth-tab" id="tab-register" onclick="switchAuth('register')" data-i18n="tab_register"></button>
+    </div>
+
+    <div class="form-alert" id="form-alert"></div>
+
+    <!-- LOGIN -->
+    <div id="login-form">
+      <div class="form-header">
+        <h1 class="form-title" data-i18n="login_title"></h1>
+        <p class="form-subtitle" data-i18n="login_sub"></p>
+      </div>
+      <div class="social-btns">
+        <button class="social-btn" onclick="socialLogin('Google')">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#e05555" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/><path fill="#4caf82" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/><path fill="#c9a84c" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"/><path fill="#e09a35" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"/></svg>
+          <span data-i18n="social_google"></span>
+        </button>
+        <button class="social-btn" onclick="socialLogin('Microsoft')">
+          <svg width="16" height="16" viewBox="0 0 24 24"><path fill="#c9a84c" d="M11.4 24H0V12.6h11.4V24z"/><path fill="#6b6f7a" d="M24 24H12.6V12.6H24V24z"/><path fill="#c9a84c" d="M11.4 11.4H0V0h11.4v11.4z"/><path fill="#6b6f7a" d="M24 11.4H12.6V0H24v11.4z"/></svg>
+          Microsoft
+        </button>
+      </div>
+      <div class="or-divider"><div class="or-line"></div><div class="or-text" data-i18n="or_text"></div><div class="or-line"></div></div>
+      <div class="field"><label data-i18n="email_label"></label><input type="email" id="login-email" data-i18n-placeholder="email_ph" autocomplete="email"></div>
+      <div class="field">
+        <label data-i18n="pw_label"></label>
+        <div class="pw-wrap"><input type="password" id="login-pw" placeholder="••••••••" autocomplete="current-password"><button class="pw-toggle" onclick="togglePw('login-pw',this)" type="button">👁</button></div>
+        <div class="field-help"><a href="#" onclick="showForgot()" data-i18n="forgot_link"></a></div>
+      </div>
+      <div class="check-row"><input type="checkbox" id="remember-me"><label for="remember-me" data-i18n="remember_me"></label></div>
+      <button class="submit-btn" id="login-btn" onclick="handleLogin()">
+        <span class="btn-text" data-i18n="signin_btn"></span>
+        <span class="btn-spinner"><div class="spinner"></div></span>
+      </button>
+      <p style="text-align:center;margin-top:20px;font-size:13px;color:var(--muted)">
+        <span data-i18n="no_account"></span> <a href="#" onclick="switchAuth('register')" style="color:var(--accent);text-decoration:none" data-i18n="register_free"></a>
+      </p>
+    </div>
+
+    <!-- REGISTER -->
+    <div id="register-form" style="display:none">
+      <div class="form-header">
+        <h1 class="form-title" data-i18n="reg_title"></h1>
+        <p class="form-subtitle" data-i18n="reg_sub"></p>
+      </div>
+      <div class="reg-steps show" id="reg-steps">
+        <div class="reg-step active" id="rs1"></div>
+        <div class="reg-step" id="rs2"></div>
+        <div class="reg-step" id="rs3"></div>
+      </div>
+      <!-- Step 1 -->
+      <div id="reg-step1">
+        <div class="field-row register-only-row show">
+          <div class="field"><label data-i18n="fname_label"></label><input type="text" id="reg-fname" data-i18n-placeholder="fname_ph"></div>
+          <div class="field"><label data-i18n="lname_label"></label><input type="text" id="reg-lname" data-i18n-placeholder="lname_ph"></div>
+        </div>
+        <div class="field"><label data-i18n="email_label"></label><input type="email" id="reg-email" data-i18n-placeholder="email_ph"></div>
+        <div class="field"><label><span data-i18n="phone_label"></span> <span style="color:var(--muted);font-size:10px" data-i18n="optional"></span></label><input type="tel" id="reg-phone" placeholder="+90 5xx xxx xx xx"></div>
+        <button class="submit-btn" onclick="regNextStep(1)">
+          <span class="btn-text" data-i18n="continue_btn"></span>
+          <span class="btn-spinner"><div class="spinner"></div></span>
+        </button>
+      </div>
+      <!-- Step 2 -->
+      <div id="reg-step2" style="display:none">
+        <div class="field"><label data-i18n="firm_label"></label><input type="text" id="reg-firm" data-i18n-placeholder="firm_ph"></div>
+        <div class="field">
+          <label data-i18n="area_label"></label>
+          <select id="reg-area">
+            <option value="" data-i18n="area_select"></option>
+            <option data-i18n="area_corp"></option>
+            <option data-i18n="area_crim"></option>
+            <option data-i18n="area_fam"></option>
+            <option data-i18n="area_emp"></option>
+            <option data-i18n="area_ip"></option>
+            <option data-i18n="area_re"></option>
+            <option data-i18n="area_tax"></option>
+            <option data-i18n="area_gen"></option>
+          </select>
+        </div>
+        <div class="field">
+          <label data-i18n="pw_label"></label>
+          <div class="pw-wrap"><input type="password" id="reg-pw" data-i18n-placeholder="pw_strong_ph" oninput="checkPwStrength(this.value)" autocomplete="new-password"><button class="pw-toggle" onclick="togglePw('reg-pw',this)" type="button">👁</button></div>
+          <div class="pw-strength show" id="pw-strength">
+            <div class="pw-bars"><div class="pw-bar" id="pb1"></div><div class="pw-bar" id="pb2"></div><div class="pw-bar" id="pb3"></div><div class="pw-bar" id="pb4"></div></div>
+            <div class="pw-label" id="pw-label" data-i18n="pw_enter"></div>
+          </div>
+        </div>
+        <div class="field"><label data-i18n="pw_confirm_label"></label><div class="pw-wrap"><input type="password" id="reg-pw2" data-i18n-placeholder="pw_repeat_ph" autocomplete="new-password"><button class="pw-toggle" onclick="togglePw('reg-pw2',this)" type="button">👁</button></div></div>
+        <div style="display:flex;gap:10px">
+          <button class="submit-btn" style="background:transparent;border:1px solid var(--border);color:var(--muted);flex:0 0 auto;padding:14px 20px" onclick="regGoBack(2)">←</button>
+          <button class="submit-btn" onclick="regNextStep(2)" style="flex:1"><span class="btn-text" data-i18n="continue_btn"></span><span class="btn-spinner"><div class="spinner"></div></span></button>
+        </div>
+      </div>
+      <!-- Step 3 -->
+      <div id="reg-step3" style="display:none">
+        <div style="background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:20px;margin-bottom:20px">
+          <div style="font-size:10px;font-family:'DM Mono',monospace;color:var(--muted);letter-spacing:1.5px;margin-bottom:14px" data-i18n="summary_title"></div>
+          <div id="reg-summary" style="display:flex;flex-direction:column;gap:8px"></div>
+        </div>
+        <div class="check-row"><input type="checkbox" id="reg-terms"><label for="reg-terms"><span data-i18n="terms_agree"></span> <a href="#" data-i18n="terms_link"></a> <span data-i18n="and_text"></span> <a href="#" data-i18n="privacy_link"></a></label></div>
+        <div class="check-row"><input type="checkbox" id="reg-marketing"><label for="reg-marketing" data-i18n="marketing_label"></label></div>
+        <div style="display:flex;gap:10px">
+          <button class="submit-btn" style="background:transparent;border:1px solid var(--border);color:var(--muted);flex:0 0 auto;padding:14px 20px" onclick="regGoBack(3)">←</button>
+          <button class="submit-btn" id="reg-btn" onclick="handleRegister()" style="flex:1"><span class="btn-text" data-i18n="create_account_btn"></span><span class="btn-spinner"><div class="spinner"></div></span></button>
+        </div>
+      </div>
+      <p style="text-align:center;margin-top:20px;font-size:13px;color:var(--muted)">
+        <span data-i18n="have_account"></span> <a href="#" onclick="switchAuth('login')" style="color:var(--accent);text-decoration:none" data-i18n="signin_link"></a>
+      </p>
+    </div>
+
+    <!-- FORGOT -->
+    <div id="forgot-form" style="display:none">
+      <div class="form-header">
+        <h1 class="form-title" data-i18n="forgot_title"></h1>
+        <p class="form-subtitle" data-i18n="forgot_sub"></p>
+      </div>
+      <div class="field"><label data-i18n="email_label"></label><input type="email" id="forgot-email" data-i18n-placeholder="email_ph"></div>
+      <button class="submit-btn" onclick="handleForgot()"><span class="btn-text" data-i18n="send_reset_btn"></span><span class="btn-spinner"><div class="spinner"></div></span></button>
+      <p style="text-align:center;margin-top:20px;font-size:13px;color:var(--muted)">
+        <a href="#" onclick="switchAuth('login')" style="color:var(--accent);text-decoration:none" data-i18n="back_signin"></a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+// ══════════════════════════════════════════════════════════════
+// i18n
+// ══════════════════════════════════════════════════════════════
+const T={
+  tr:{
+    left_tag:'✦ HUKUK BÜROSU YÖNETİMİ', left_h1:'Büronuz,', left_h2:'mükemmel organize.',
+    left_desc:'Tek zarif çalışma alanında müvekkilleri, davaları, son tarihleri ve uyarıları yönetin.',
+    lf1:'Tam dava geçmişiyle müvekkil profilleri', lf2:'İç içe alt dava hiyerarşisi', lf3:'Akıllı yasal son tarih uyarıları', lf4:'Renk kodlu aciliyet sistemi', lf5:'Eksiksiz aktivite zaman çizelgesi',
+    left_footer:'© 2025 LEXIS HUKUK TEKNOLOJİLERİ',
+    back_home:'← Ana Sayfaya Dön',
+    plan_selected:'Seçilen plan:', tab_login:'Giriş Yap', tab_register:'Kayıt Ol',
+    login_title:'Tekrar hoş geldiniz.', login_sub:'Lexis kontrol panelinize giriş yapın.',
+    social_google:'Google ile Devam Et',
+    or_text:'VEYA', email_label:'E-posta Adresi', email_ph:'siz@hukukburo.com',
+    pw_label:'Şifre', forgot_link:'Şifremi unuttum?', remember_me:'30 gün boyunca hatırla',
+    signin_btn:'Giriş Yap →', no_account:'Hesabınız yok mu?', register_free:'Ücretsiz kayıt olun →',
+    reg_title:'Hesap oluşturun.', reg_sub:'14 günlük ücretsiz denemenizi başlatın. Kart gerekmez.',
+    fname_label:'Ad', fname_ph:'Ahmet', lname_label:'Soyad', lname_ph:'Demir',
+    phone_label:'Telefon', optional:'(isteğe bağlı)',
+    firm_label:'Hukuk Bürosu / Şirket Adı', firm_ph:'Demir & Ortaklar',
+    area_label:'Uzmanlık Alanı', area_select:'Uzmanlık alanı seçin…',
+    area_corp:'Şirketler Hukuku', area_crim:'Ceza Hukuku', area_fam:'Aile Hukuku',
+    area_emp:'İş Hukuku', area_ip:'Fikri Mülkiyet & Teknoloji', area_re:'Gayrimenkul Hukuku',
+    area_tax:'Vergi Hukuku', area_gen:'Genel Hukuk Uygulaması',
+    pw_strong_ph:'Güçlü bir şifre oluşturun', pw_enter:'Şifre giriniz',
+    pw_confirm_label:'Şifre Tekrar', pw_repeat_ph:'Şifreyi tekrarlayın',
+    continue_btn:'Devam Et →', summary_title:'HESAP ÖZETİ',
+    terms_agree:'Lexis\'i kabul ediyorum', terms_link:'Kullanım Şartları', and_text:'ve', privacy_link:'Gizlilik Politikası',
+    marketing_label:'Ürün güncellemeleri ve hukuk teknoloji haberleri gönderin',
+    create_account_btn:'Hesap Oluştur →', have_account:'Zaten hesabınız var mı?', signin_link:'Giriş yapın →',
+    forgot_title:'Şifre sıfırlayın.', forgot_sub:'E-postanızı girin, size bir bağlantı gönderelim.',
+    send_reset_btn:'Sıfırlama Bağlantısı Gönder →', back_signin:'← Girişe geri dön',
+    alert_enter_email:'Lütfen e-posta adresinizi girin.', alert_enter_pw:'Lütfen şifrenizi girin.',
+    alert_valid_email:'Lütfen geçerli bir e-posta adresi girin.',
+    alert_name:'Lütfen ad ve soyadınızı girin.', alert_firm:'Lütfen büro veya şirket adınızı girin.',
+    alert_pw_short:'Şifre en az 8 karakter olmalıdır.', alert_pw_match:'Şifreler eşleşmiyor.',
+    alert_terms:'Devam etmek için Kullanım Şartlarını kabul edin.',
+    alert_created:'Hesap oluşturuldu! Kontrol panelinize yönlendiriliyorsunuz…',
+    alert_reset:'Sıfırlama bağlantısı gönderildi! Gelen kutunuzu kontrol edin.',
+    alert_redirecting:'Yönlendiriliyorsunuz…',
+    pw_labels:['','Zayıf','Orta','Güçlü','Çok Güçlü'],
+    summary_keys:['Ad','E-posta','Büro','Uzmanlık','Telefon'],
+    not_specified:'Belirtilmedi',
+    title:'Lexis — Giriş Yap'
+  },
+  en:{
+    left_tag:'✦ LEGAL PRACTICE MANAGEMENT', left_h1:'Your practice,', left_h2:'perfectly organized.',
+    left_desc:'Manage clients, cases, deadlines, and warnings in a single elegant workspace built for legal professionals.',
+    lf1:'Client profiles with full case history', lf2:'Nested sub-case hierarchy', lf3:'Smart legal deadline warnings', lf4:'Color-coded urgency system', lf5:'Complete activity timeline',
+    left_footer:'© 2025 LEXIS LEGAL TECHNOLOGIES',
+    back_home:'← Back to Home',
+    plan_selected:'Selected plan:', tab_login:'Sign In', tab_register:'Register',
+    login_title:'Welcome back.', login_sub:'Sign in to your Lexis dashboard.',
+    social_google:'Continue with Google',
+    or_text:'OR', email_label:'Email Address', email_ph:'you@lawfirm.com',
+    pw_label:'Password', forgot_link:'Forgot password?', remember_me:'Remember me for 30 days',
+    signin_btn:'Sign In →', no_account:"Don't have an account?", register_free:'Register free →',
+    reg_title:'Create account.', reg_sub:'Start your 14-day free trial. No card needed.',
+    fname_label:'First Name', fname_ph:'Ahmet', lname_label:'Last Name', lname_ph:'Demir',
+    phone_label:'Phone', optional:'(optional)',
+    firm_label:'Law Firm / Company Name', firm_ph:'Demir & Associates',
+    area_label:'Practice Area', area_select:'Select practice area…',
+    area_corp:'Corporate Law', area_crim:'Criminal Law', area_fam:'Family Law',
+    area_emp:'Employment Law', area_ip:'IP & Technology', area_re:'Real Estate Law',
+    area_tax:'Tax Law', area_gen:'General Practice',
+    pw_strong_ph:'Create a strong password', pw_enter:'Enter a password',
+    pw_confirm_label:'Confirm Password', pw_repeat_ph:'Repeat password',
+    continue_btn:'Continue →', summary_title:'ACCOUNT SUMMARY',
+    terms_agree:'I agree to Lexis', terms_link:'Terms of Service', and_text:'and', privacy_link:'Privacy Policy',
+    marketing_label:'Send me product updates and legal tech insights',
+    create_account_btn:'Create Account →', have_account:'Already have an account?', signin_link:'Sign in →',
+    forgot_title:'Reset password.', forgot_sub:"Enter your email and we'll send you a link.",
+    send_reset_btn:'Send Reset Link →', back_signin:'← Back to sign in',
+    alert_enter_email:'Please enter your email address.', alert_enter_pw:'Please enter your password.',
+    alert_valid_email:'Please enter a valid email address.',
+    alert_name:'Please enter your first and last name.', alert_firm:'Please enter your firm or company name.',
+    alert_pw_short:'Password must be at least 8 characters.', alert_pw_match:'Passwords do not match.',
+    alert_terms:'Please accept the Terms of Service to continue.',
+    alert_created:'Account created! Redirecting to your dashboard…',
+    alert_reset:'Reset link sent! Check your inbox.',
+    alert_redirecting:'Redirecting to login…',
+    pw_labels:['','Weak','Medium','Strong','Very Strong'],
+    summary_keys:['Name','Email','Firm','Practice','Phone'],
+    not_specified:'Not specified',
+    title:'Lexis — Sign In'
+  }
+};
+
+let lang=localStorage.getItem('lexis_lang')||'tr';
+
+function setLang(l){
+  lang=l; localStorage.setItem('lexis_lang',l);
+  document.documentElement.lang=l;
+  document.title=T[l].title;
+  document.getElementById('btn-tr').classList.toggle('active',l==='tr');
+  document.getElementById('btn-en').classList.toggle('active',l==='en');
+  const t=T[l];
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    if(t[k]!==undefined) el.textContent=t[k];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
+    const k=el.getAttribute('data-i18n-placeholder');
+    if(t[k]!==undefined) el.placeholder=t[k];
+  });
+  // Update pw label if visible
+  const pwl=document.getElementById('pw-label');
+  if(pwl && pwl.textContent && !['Weak','Medium','Strong','Very Strong','Zayıf','Orta','Güçlü','Çok Güçlü'].includes(pwl.textContent))
+    pwl.textContent=t.pw_enter;
+}
+
+// ── Auth logic ──────────────────────────────────────────────────
+function switchAuth(mode){
+  document.getElementById('login-form').style.display=mode==='login'?'block':'none';
+  document.getElementById('register-form').style.display=mode==='register'?'block':'none';
+  document.getElementById('forgot-form').style.display='none';
+  document.getElementById('tab-login').classList.toggle('active',mode==='login');
+  document.getElementById('tab-register').classList.toggle('active',mode==='register');
+  clearAlert();
+}
+function showForgot(){ document.getElementById('login-form').style.display='none'; document.getElementById('forgot-form').style.display='block'; clearAlert(); }
+function showAlert(msg,type='error'){ const el=document.getElementById('form-alert'); el.textContent=msg; el.className='form-alert '+type+' show'; }
+function clearAlert(){ document.getElementById('form-alert').className='form-alert'; }
+function togglePw(id,btn){ const inp=document.getElementById(id); const sh=inp.type==='text'; inp.type=sh?'password':'text'; btn.textContent=sh?'👁':'🙈'; }
+function checkPwStrength(pw){
+  let score=0;
+  if(pw.length>=8) score++; if(/[A-Z]/.test(pw)) score++; if(/[0-9]/.test(pw)) score++; if(/[^A-Za-z0-9]/.test(pw)) score++;
+  ['pb1','pb2','pb3','pb4'].forEach((b,i)=>{ const el=document.getElementById(b); el.className='pw-bar'+(i<score?' '+['weak','medium','medium','strong'][Math.min(i,score-1)]:''); });
+  document.getElementById('pw-label').textContent=T[lang].pw_labels[score]||T[lang].pw_enter;
+}
+function handleLogin(){
+  clearAlert();
+  const email=document.getElementById('login-email').value.trim();
+  const pw=document.getElementById('login-pw').value;
+  const t=T[lang];
+  if(!email){ showAlert(t.alert_enter_email); return; }
+  if(!pw){ showAlert(t.alert_enter_pw); return; }
+  if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showAlert(t.alert_valid_email); return; }
+  const btn=document.getElementById('login-btn'); btn.classList.add('loading');
+  setTimeout(()=>{ btn.classList.remove('loading'); window.location.href='lawyer-dashboard.html'; },1400);
+}
+function socialLogin(provider){ showAlert(T[lang].alert_redirecting,'success'); setTimeout(()=>{ window.location.href='lawyer-dashboard.html'; },1500); }
+
+let regData={};
+function regNextStep(s){
+  clearAlert(); const t=T[lang];
+  if(s===1){
+    const fname=document.getElementById('reg-fname').value.trim();
+    const lname=document.getElementById('reg-lname').value.trim();
+    const email=document.getElementById('reg-email').value.trim();
+    if(!fname||!lname){ showAlert(t.alert_name); return; }
+    if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showAlert(t.alert_valid_email); return; }
+    regData={fname,lname,email,phone:document.getElementById('reg-phone').value.trim()}; setRegStep(2);
+  } else if(s===2){
+    const firm=document.getElementById('reg-firm').value.trim();
+    const pw=document.getElementById('reg-pw').value;
+    const pw2=document.getElementById('reg-pw2').value;
+    if(!firm){ showAlert(t.alert_firm); return; }
+    if(pw.length<8){ showAlert(t.alert_pw_short); return; }
+    if(pw!==pw2){ showAlert(t.alert_pw_match); return; }
+    regData.firm=firm; regData.area=document.getElementById('reg-area').value; regData.pw=pw;
+    const keys=t.summary_keys;
+    document.getElementById('reg-summary').innerHTML=[
+      [keys[0],regData.fname+' '+regData.lname],[keys[1],regData.email],
+      [keys[2],regData.firm],[keys[3],regData.area||t.not_specified],[keys[4],regData.phone||'—']
+    ].map(([k,v])=>`<div style="display:flex;justify-content:space-between;font-size:12px"><span style="color:var(--muted);font-family:'DM Mono',monospace">${k}</span><span style="color:var(--text);font-weight:500">${v}</span></div>`).join('');
+    setRegStep(3);
+  }
+}
+function regGoBack(s){ clearAlert(); setRegStep(s-1); }
+function setRegStep(s){
+  [1,2,3].forEach(i=>{ document.getElementById('reg-step'+i).style.display=i===s?'block':'none'; const el=document.getElementById('rs'+i); el.className='reg-step'+(i<s?' done':i===s?' active':''); });
+}
+function handleRegister(){
+  clearAlert(); const t=T[lang];
+  if(!document.getElementById('reg-terms').checked){ showAlert(t.alert_terms); return; }
+  const btn=document.getElementById('reg-btn'); btn.classList.add('loading');
+  setTimeout(()=>{ btn.classList.remove('loading'); showAlert(t.alert_created,'success'); setTimeout(()=>{ window.location.href='lawyer-dashboard.html'; },1200); },1600);
+}
+function handleForgot(){
+  clearAlert(); const t=T[lang];
+  const email=document.getElementById('forgot-email').value.trim();
+  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showAlert(t.alert_valid_email); return; }
+  showAlert(t.alert_reset,'success');
+}
+
+// ── Plan badge from URL ──────────────────────────────────────────
+const params=new URLSearchParams(window.location.search);
+const plan=params.get('plan');
+if(plan){ document.getElementById('plan-name-badge').textContent=plan; document.getElementById('plan-badge').classList.add('show'); switchAuth('register'); }
+
+document.addEventListener('keydown',e=>{ if(e.key==='Enter'&&document.getElementById('login-form').style.display!=='none') handleLogin(); });
+
+setLang(lang);
+</script>
+</body>
+</html>

@@ -1,0 +1,1049 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lexis — Müvekkil Paneli</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#0e0f11;--surface:#16181c;--surface2:#1e2128;--border:#2a2d35;
+  --accent:#c9a84c;--accent2:#e8c97a;--text:#e8e4dc;--muted:#7a7d87;
+  --danger:#e05555;--warn:#e09a35;--ok:#4caf82;
+  --file-pdf:#e05555;--file-doc:#4a90d9;--file-img:#9b59b6;
+  --file-xls:#4caf82;--file-other:#7a7d87;
+}
+body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;overflow-x:hidden}
+/* Sidebar */
+.sidebar{width:260px;min-height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;flex-shrink:0}
+.logo{padding:24px 24px 16px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
+.logo-text h1{font-family:'Playfair Display',serif;font-size:20px;color:var(--accent);letter-spacing:1px}
+.logo-text p{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:2px;margin-top:1px}
+.lang-toggle{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:14px;overflow:hidden;flex-shrink:0}
+.lang-btn{padding:4px 9px;font-size:10px;font-family:'DM Mono',monospace;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .2s;letter-spacing:.5px}
+.lang-btn.active{background:var(--accent);color:#0e0f11;font-weight:600}
+.sidebar-nav{flex:1;padding:16px 0}
+.nav-section{padding:8px 20px 4px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase}
+.nav-item{display:flex;align-items:center;gap:10px;padding:10px 20px;cursor:pointer;color:var(--muted);font-size:13px;transition:all .15s;border-left:2px solid transparent}
+.nav-item:hover{color:var(--text);background:var(--surface2)}
+.nav-item.active{color:var(--accent);background:rgba(201,168,76,.06);border-left-color:var(--accent)}
+.nav-item .icon{width:16px;text-align:center;font-size:14px}
+.sidebar-footer{padding:14px 20px;border-top:1px solid var(--border)}
+.add-client-btn{width:100%;padding:9px;background:var(--accent);color:#0e0f11;border:none;border-radius:6px;font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;cursor:pointer;letter-spacing:.5px;transition:background .15s}
+.add-client-btn:hover{background:var(--accent2)}
+/* Main */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{padding:18px 28px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;background:var(--surface)}
+.topbar h2{font-family:'Playfair Display',serif;font-size:19px;font-weight:600}
+.btn{padding:7px 14px;border-radius:6px;border:none;cursor:pointer;font-size:12px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all .15s;letter-spacing:.3px}
+.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
+.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
+.btn-primary{background:var(--accent);color:#0e0f11}
+.btn-primary:hover{background:var(--accent2)}
+.btn-danger{background:rgba(224,85,85,.15);color:var(--danger);border:1px solid rgba(224,85,85,.3)}
+.btn-danger:hover{background:rgba(224,85,85,.25)}
+.btn-sm{padding:4px 9px;font-size:11px}
+.content{flex:1;overflow-y:auto;padding:20px 28px}
+/* Client grid */
+.client-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:14px}
+.client-card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px;cursor:pointer;transition:all .18s;position:relative}
+.client-card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,.3)}
+.client-card.selected{border-color:var(--accent);background:rgba(201,168,76,.04)}
+.client-avatar{width:38px;height:38px;border-radius:50%;background:linear-gradient(135deg,var(--accent),#8b6914);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:15px;color:#0e0f11;font-weight:700;margin-bottom:10px}
+.client-name{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;margin-bottom:3px}
+.client-meta{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace}
+.client-badges{display:flex;gap:5px;margin-top:9px;flex-wrap:wrap}
+.badge{padding:2px 7px;border-radius:20px;font-size:9px;font-family:'DM Mono',monospace;letter-spacing:.4px}
+.badge-warn{background:rgba(224,154,53,.15);color:var(--warn);border:1px solid rgba(224,154,53,.3)}
+.badge-ok{background:rgba(76,175,130,.15);color:var(--ok);border:1px solid rgba(76,175,130,.3)}
+.badge-danger{background:rgba(224,85,85,.15);color:var(--danger);border:1px solid rgba(224,85,85,.3)}
+.badge-info{background:rgba(201,168,76,.1);color:var(--accent);border:1px solid rgba(201,168,76,.2)}
+.warn-count{position:absolute;top:14px;right:14px;background:var(--danger);color:#fff;border-radius:50%;width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;font-family:'DM Mono',monospace}
+/* Detail panel */
+.detail-panel{position:fixed;top:0;right:-620px;width:600px;height:100vh;background:var(--surface);border-left:1px solid var(--border);z-index:100;display:flex;flex-direction:column;transition:right .25s cubic-bezier(.4,0,.2,1);overflow:hidden}
+.detail-panel.open{right:0;box-shadow:-20px 0 60px rgba(0,0,0,.5)}
+.panel-header{padding:18px 22px;border-bottom:1px solid var(--border);display:flex;align-items:flex-start;justify-content:space-between;flex-shrink:0}
+.panel-title{font-family:'Playfair Display',serif;font-size:19px;font-weight:600}
+.panel-sub{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:3px}
+.close-btn{background:none;border:none;color:var(--muted);cursor:pointer;font-size:19px;padding:3px;line-height:1;transition:color .15s}
+.close-btn:hover{color:var(--text)}
+.panel-tabs{display:flex;border-bottom:1px solid var(--border);flex-shrink:0;overflow-x:auto}
+.panel-tabs::-webkit-scrollbar{display:none}
+.tab{padding:10px 16px;font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .15s;letter-spacing:.5px;white-space:nowrap;flex-shrink:0}
+.tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab:hover:not(.active){color:var(--text)}
+.panel-body{flex:1;overflow-y:auto;padding:18px 22px}
+.section-title{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between}
+/* Cases */
+.case-card{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;margin-bottom:9px}
+.case-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:7px}
+.case-number{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:.5px}
+.case-title-text{font-size:13px;font-weight:500;margin-top:2px}
+.case-desc{font-size:11px;color:var(--muted);line-height:1.6;margin-top:5px;word-break:break-word}
+.case-actions{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap}
+.subcase-list{margin-top:9px;padding-left:14px;border-left:2px solid var(--border)}
+.subcase-item{background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:10px;margin-bottom:5px}
+.subcase-header{display:flex;align-items:center;justify-content:space-between;gap:7px}
+.subcase-title{font-size:12px;font-weight:500}
+.subcase-num{font-family:'DM Mono',monospace;font-size:10px;color:var(--muted)}
+/* Warnings */
+.warn-item{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px;margin-bottom:7px;display:flex;gap:10px;align-items:flex-start}
+.warn-icon{flex-shrink:0;font-size:16px;margin-top:1px}
+.warn-body{flex:1;min-width:0}
+.warn-text{font-size:12px;font-weight:500;margin-bottom:3px;word-break:break-word}
+.warn-meta{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace}
+.warn-actions{display:flex;gap:5px;margin-top:7px}
+.warn-level{padding:2px 7px;border-radius:10px;font-size:9px;font-family:'DM Mono',monospace;flex-shrink:0;align-self:flex-start}
+.urgency-bar-wrap{height:3px;background:var(--border);border-radius:3px;margin-top:6px;overflow:hidden}
+.urgency-bar-fill{height:3px;border-radius:3px;transition:width .3s}
+.fill-high{background:linear-gradient(90deg,var(--danger),rgba(224,85,85,.4))}
+.fill-med{background:linear-gradient(90deg,var(--warn),rgba(224,154,53,.4))}
+.fill-low{background:linear-gradient(90deg,var(--ok),rgba(76,175,130,.4))}
+/* Timeline */
+.timeline-item{display:flex;gap:10px;margin-bottom:0}
+.tl-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;margin-top:3px}
+.tl-content{flex:1;padding-bottom:12px}
+.tl-title{font-size:12px;font-weight:500}
+.tl-date{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:1px}
+.tl-file-chip{display:inline-flex;align-items:center;gap:4px;margin-top:4px;padding:2px 7px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;font-size:9px;font-family:'DM Mono',monospace;color:var(--muted)}
+/* Files tab */
+.file-drop-zone{border:2px dashed var(--border);border-radius:10px;padding:28px 16px;text-align:center;cursor:pointer;transition:all .2s;margin-bottom:16px;position:relative}
+.file-drop-zone:hover,.file-drop-zone.drag-over{border-color:var(--accent);background:rgba(201,168,76,.04)}
+.file-drop-zone input[type=file]{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.fdz-icon{font-size:28px;margin-bottom:8px;display:block}
+.fdz-title{font-size:13px;font-weight:500;margin-bottom:3px}
+.fdz-sub{font-size:11px;color:var(--muted)}
+.fdz-types{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin-top:10px}
+.fdz-type-tag{padding:2px 7px;background:var(--surface2);border:1px solid var(--border);border-radius:4px;font-size:9px;font-family:'DM Mono',monospace;color:var(--muted)}
+.file-case-select{margin-bottom:12px}
+.file-case-select label{display:block;font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);letter-spacing:.5px;margin-bottom:5px}
+.file-case-select select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:7px 10px;color:var(--text);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;transition:border .15s}
+.file-case-select select:focus{border-color:var(--accent)}
+.file-case-select select option{background:var(--surface2)}
+.file-type-group{margin-bottom:16px}
+.ftg-header{display:flex;align-items:center;gap:7px;margin-bottom:8px;padding-bottom:7px;border-bottom:1px solid var(--border)}
+.ftg-icon{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9px;flex-shrink:0;font-weight:700;font-family:'DM Mono',monospace}
+.ftg-label{font-family:'DM Mono',monospace;font-size:9px;letter-spacing:1.5px;text-transform:uppercase;font-weight:500}
+.ftg-count{font-family:'DM Mono',monospace;font-size:9px;color:var(--muted);margin-left:auto}
+.file-item{display:flex;align-items:center;gap:9px;padding:9px 10px;background:var(--bg);border:1px solid var(--border);border-radius:6px;margin-bottom:5px;transition:background .15s}
+.file-item:hover{background:var(--surface2)}
+.file-icon{width:28px;height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:8px;flex-shrink:0;font-weight:700;font-family:'DM Mono',monospace}
+.fi-pdf{background:rgba(224,85,85,.15);color:var(--file-pdf)}
+.fi-doc{background:rgba(74,144,217,.15);color:var(--file-doc)}
+.fi-img{background:rgba(155,89,182,.15);color:var(--file-img)}
+.fi-xls{background:rgba(76,175,130,.15);color:var(--file-xls)}
+.fi-other{background:var(--surface2);color:var(--file-other)}
+.file-info{flex:1;min-width:0}
+.file-name{font-size:12px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.file-meta{font-size:9px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px;display:flex;gap:7px;flex-wrap:wrap}
+.file-case-tag{display:inline-block;padding:1px 5px;border-radius:3px;background:rgba(201,168,76,.1);color:var(--accent);font-size:8px;font-family:'DM Mono',monospace;border:1px solid rgba(201,168,76,.2)}
+.file-actions{display:flex;gap:3px;flex-shrink:0}
+.file-action-btn{background:none;border:1px solid var(--border);border-radius:4px;padding:3px 7px;font-size:9px;color:var(--muted);cursor:pointer;font-family:'DM Mono',monospace;transition:all .15s}
+.file-action-btn:hover{border-color:var(--accent);color:var(--accent)}
+.file-action-btn.del:hover{border-color:var(--danger);color:var(--danger)}
+.upload-progress{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:9px 10px;margin-bottom:5px;display:flex;align-items:center;gap:9px}
+.up-icon{font-size:16px;flex-shrink:0;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.up-info{flex:1;min-width:0}
+.up-name{font-size:11px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.up-bar-wrap{height:2px;background:var(--border);border-radius:1px;margin-top:5px;overflow:hidden}
+.up-bar{height:2px;background:var(--accent);border-radius:1px;transition:width .3s}
+.files-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:16px}
+.fstat{background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:10px;text-align:center}
+.fstat-num{font-family:'Playfair Display',serif;font-size:18px;font-weight:700;margin-bottom:1px}
+.fstat-label{font-size:8px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.5px}
+/* Forms */
+.form-group{margin-bottom:12px}
+.form-label{display:block;font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);letter-spacing:.5px;margin-bottom:5px}
+.form-input,.form-select,.form-textarea{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:6px;padding:8px 11px;color:var(--text);font-size:12px;font-family:'DM Sans',sans-serif;outline:none;transition:border .15s}
+.form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--accent)}
+.form-textarea{resize:vertical;min-height:72px}
+.form-select option{background:var(--surface2)}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;backdrop-filter:blur(3px)}
+.modal-overlay.show{opacity:1;pointer-events:all}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:12px;width:460px;max-height:82vh;overflow-y:auto;padding:24px}
+.modal h3{font-family:'Playfair Display',serif;font-size:17px;margin-bottom:18px}
+.modal-actions{display:flex;gap:9px;justify-content:flex-end;margin-top:18px}
+.empty-state{text-align:center;padding:28px 16px;color:var(--muted)}
+.empty-state .ei{font-size:28px;margin-bottom:8px}
+.empty-state p{font-size:12px}
+.list-view{display:flex;flex-direction:column;gap:9px}
+.scroll-thin::-webkit-scrollbar{width:3px}
+.scroll-thin::-webkit-scrollbar-track{background:transparent}
+.scroll-thin::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
+.fpm-pdf-placeholder{text-align:center;padding:32px;color:var(--muted)}
+.fpm-pdf-placeholder .ei{font-size:40px;display:block;margin-bottom:10px}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="logo">
+    <div class="logo-text">
+      <h1>LEXIS</h1>
+      <p id="sidebar-sub">MÜVEKKİL PANELİ</p>
+    </div>
+    <div class="lang-toggle">
+      <button class="lang-btn active" id="btn-tr" onclick="setLang('tr')">TR</button>
+      <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
+    </div>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-section" id="nav-sec-main">Ana Menü</div>
+    <div class="nav-item active" id="nav-clients"  onclick="setView('clients',this)"><span class="icon">⚖</span> <span data-i18n="nav_clients">Müvekkiller</span></div>
+    <div class="nav-item"       id="nav-warnings"  onclick="setView('warnings',this)"><span class="icon">⚠</span> <span data-i18n="nav_warnings">Tüm Uyarılar</span></div>
+    <div class="nav-item"       id="nav-cases"     onclick="setView('cases',this)"><span class="icon">📁</span> <span data-i18n="nav_cases">Tüm Davalar</span></div>
+    <div class="nav-section" style="margin-top:10px" id="nav-sec-quick">Hızlı</div>
+    <div class="nav-item"       id="nav-urgent"    onclick="setView('urgent',this)"><span class="icon">🔴</span> <span data-i18n="nav_urgent">Acil Öğeler</span></div>
+  </nav>
+  <div class="sidebar-footer">
+    <button class="add-client-btn" onclick="openAddClient()" data-i18n="btn_add_client">+ Yeni Müvekkil Ekle</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <h2 id="view-title">Müvekkiller</h2>
+    <div>
+      <input class="form-input" id="search" style="width:200px;padding:6px 11px" oninput="renderCurrentView()" data-i18n-placeholder="search_ph">
+    </div>
+  </div>
+  <div class="content scroll-thin" id="main-content">
+    <div class="client-grid" id="client-grid"></div>
+  </div>
+</div>
+
+<!-- Detail panel -->
+<div class="detail-panel" id="detail-panel">
+  <div class="panel-header">
+    <div>
+      <div class="panel-title" id="panel-name">—</div>
+      <div class="panel-sub"   id="panel-meta">—</div>
+    </div>
+    <button class="close-btn" onclick="closePanel()">✕</button>
+  </div>
+  <div class="panel-tabs">
+    <div class="tab active" id="tab-cases"    onclick="switchTab('cases')" data-i18n="tab_cases">DAVALAR</div>
+    <div class="tab"        id="tab-warnings" onclick="switchTab('warnings')" data-i18n="tab_warnings">UYARILAR</div>
+    <div class="tab"        id="tab-files"    onclick="switchTab('files')" data-i18n="tab_files">DOSYALAR</div>
+    <div class="tab"        id="tab-timeline" onclick="switchTab('timeline')" data-i18n="tab_timeline">ZAMANÇİZELGESİ</div>
+  </div>
+  <div class="panel-body scroll-thin" id="panel-body"></div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal" onclick="handleModalClick(event)">
+  <div class="modal" id="modal-inner"></div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════════════
+// i18n
+// ═══════════════════════════════════════════════════════
+const T={
+  tr:{
+    sidebar_sub:'MÜVEKKİL PANELİ',
+    nav_sec_main:'Ana Menü', nav_sec_quick:'Hızlı',
+    nav_clients:'Müvekkiller', nav_warnings:'Tüm Uyarılar', nav_cases:'Tüm Davalar', nav_urgent:'Acil Öğeler',
+    btn_add_client:'+ Yeni Müvekkil Ekle',
+    search_ph:'Müvekkil ara…',
+    view_clients:'Müvekkiller', view_warnings:'Tüm Uyarılar', view_cases:'Tüm Davalar', view_urgent:'Acil Öğeler',
+    tab_cases:'DAVALAR', tab_warnings:'UYARILAR', tab_files:'DOSYALAR', tab_timeline:'ZAMANÇİZELGESİ',
+    // Client card
+    badge_corporate:'Kurumsal', badge_individual:'Bireysel',
+    badge_active_cases:'Aktif Dava', badge_active_cases_pl:'Aktif Dava',
+    badge_no_active:'Aktif Dava Yok',
+    badge_warning:'Uyarı', badge_warnings_pl:'Uyarı',
+    badge_file:'Dosya', badge_files_pl:'Dosya',
+    // Panel tabs
+    sec_cases:'Davalar', btn_new_case:'+ Yeni Dava',
+    sec_warnings:'Uyarılar & Terminler', btn_add_warning:'+ Uyarı Ekle',
+    sec_files:'Tüm Dosyalar',
+    sec_timeline:'Zaman Çizelgesi',
+    // Empty states
+    empty_cases:'Henüz dava yok.', empty_warnings:'Aktif uyarı yok.', empty_files:'Henüz dosya yüklenmedi. Yukarıdaki alandan dava dosyaları ekleyin.',
+    empty_no_events:'Henüz etkinlik yok.', empty_search:'Müvekkil bulunamadı.',
+    // Files tab
+    lbl_total_files:'TOPLAM DOSYA', lbl_pdf:'PDF', lbl_docs:'BELGE', lbl_size:'TOPLAM BOYUT',
+    lbl_upload:'Dosya Yükle', lbl_drop_or_click:'Sürükle bırak veya tıkla',
+    lbl_attach_case:'Davaya Ekle', lbl_select_case:'— Dava seçin —',
+    fdz_title:'Dosyaları buraya bırakın veya tıklayın',
+    fdz_sub:'Önce bir dava seçin, ardından dosya yükleyin',
+    // File type groups
+    ft_pdf:'PDF Belgeler', ft_doc:'Belgeler & Metin', ft_img:'Görseller', ft_xls:'Tablolar', ft_other:'Diğer Dosyalar',
+    // File actions
+    btn_preview:'Önizle', btn_download:'İndir', btn_delete_file:'Sil',
+    // Timeline filters
+    tl_all:'Tümü', tl_cases:'📁 Davalar', tl_warnings:'⚠ Uyarılar', tl_files:'📎 Dosyalar',
+    tl_sorted:'EN YENİDEN ESKİYE',
+    tl_event:'etkinlik', tl_events:'etkinlik',
+    // TL labels
+    tl_case_opened:'Dava açıldı:', tl_warning:'Uyarı:', tl_subcase:'Alt dava:', tl_file_uploaded:'Dosya yüklendi:',
+    // Modals
+    modal_new_client:'Yeni Müvekkil',
+    lbl_name:'Tam Ad / Şirket', ph_name:'örn. Ahmet Demir',
+    lbl_email:'E-posta', ph_email:'ornek@hukuk.com',
+    lbl_phone:'Telefon', ph_phone:'+90...',
+    lbl_type:'Tür', opt_individual:'Bireysel', opt_corporate:'Kurumsal',
+    lbl_since:'Müvekkil Başlangıcı',
+    btn_cancel:'İptal', btn_create_client:'Müvekkil Oluştur',
+    modal_new_case:'Yeni Dava',
+    lbl_case_title:'Dava Başlığı', ph_case_title:'örn. Sözleşme Anlaşmazlığı',
+    lbl_case_id:'Dava No (isteğe bağlı)', ph_case_id:'Boşsa otomatik oluşturulur',
+    lbl_description:'Açıklama', ph_description:'Kısa açıklama…',
+    lbl_status:'Durum', opt_active:'Aktif', opt_pending:'Beklemede', opt_closed:'Kapalı',
+    lbl_date:'Tarih',
+    btn_add_case:'Dava Ekle',
+    modal_edit_case:'Dava Düzenle', btn_save:'Kaydet',
+    modal_new_subcase:'Yeni Alt Dava',
+    lbl_subcase_title:'Alt Dava Başlığı', ph_subcase_title:'örn. Delil İncelemesi',
+    lbl_subcase_id:'Alt Dava No (isteğe bağlı)',
+    btn_add_subcase:'Alt Dava Ekle',
+    modal_new_warning:'Yeni Uyarı / Hatırlatma',
+    lbl_warn_text:'Uyarı Metni', ph_warn_text:'örn. Fatura 15 gün içinde ödenmeli',
+    lbl_warn_type:'Tür', lbl_urgency:'Aciliyet', lbl_days_due:'Kalan Gün',
+    lbl_due_date:'Vade Tarihi',
+    opt_high:'🔴 Yüksek', opt_medium:'🟡 Orta', opt_low:'🟢 Düşük',
+    btn_add_warning_modal:'Uyarı Ekle',
+    modal_edit_warning:'Uyarı Düzenle', btn_save_changes:'Değişiklikleri Kaydet',
+    // Confirm dialogs
+    confirm_delete_case:'Bu davayı ve tüm alt davalarını silmek istediğinizden emin misiniz?',
+    confirm_delete_subcase:'Bu alt davayı silmek istediğinizden emin misiniz?',
+    confirm_dismiss_warning:'Bu uyarıyı kapatmak istiyor musunuz?',
+    confirm_delete_file:'Bu dosyayı silmek istediğinizden emin misiniz? Bu işlem geri alınamaz.',
+    // Days label
+    day:'gün', days:'gün',
+    // Toggle/actions
+    btn_toggle:'Değiştir', btn_edit:'Düzenle', btn_files_count:'📎 {{n}} Dosya', btn_sub_case:'+ Alt Dava',
+    // Preview modal
+    preview_no_preview:'Bu ortamda önizleme mevcut değil.\nİçeriği görüntülemek için dosyayı indirin.',
+    btn_download_file:'Dosyayı İndir', btn_close:'Kapat',
+    // Case status labels for badges
+    status_active:'Aktif', status_pending:'Beklemede', status_closed:'Kapalı',
+    // Warn types
+    warn_types:['Fatura','Hukuki Süre','Mahkeme Duruşması','Belge Teslimi','Arabuluculuk','Zamanaşımı','Harç Ödemesi','Randevu','Sözleşme Yenileme','Uyum','Diğer'],
+    title:'Lexis — Müvekkil Paneli'
+  },
+  en:{
+    sidebar_sub:'CLIENT DASHBOARD',
+    nav_sec_main:'Main', nav_sec_quick:'Quick',
+    nav_clients:'Clients', nav_warnings:'All Warnings', nav_cases:'All Cases', nav_urgent:'Urgent Items',
+    btn_add_client:'+ Add New Client',
+    search_ph:'Search clients…',
+    view_clients:'Clients', view_warnings:'All Warnings', view_cases:'All Cases', view_urgent:'Urgent Items',
+    tab_cases:'CASES', tab_warnings:'WARNINGS', tab_files:'FILES', tab_timeline:'TIMELINE',
+    badge_corporate:'Corporate', badge_individual:'Individual',
+    badge_active_cases:'Active Case', badge_active_cases_pl:'Active Cases',
+    badge_no_active:'No Active Cases',
+    badge_warning:'Warning', badge_warnings_pl:'Warnings',
+    badge_file:'File', badge_files_pl:'Files',
+    sec_cases:'Cases', btn_new_case:'+ New Case',
+    sec_warnings:'Warnings & Deadlines', btn_add_warning:'+ Add Warning',
+    sec_files:'All Files',
+    sec_timeline:'Timeline',
+    empty_cases:'No cases yet.', empty_warnings:'No active warnings.', empty_files:'No files uploaded yet. Use the drop zone above to add files to a case.',
+    empty_no_events:'No events yet.', empty_search:'No clients found.',
+    lbl_total_files:'TOTAL FILES', lbl_pdf:'PDF', lbl_docs:'DOCS', lbl_size:'TOTAL SIZE',
+    lbl_upload:'Upload Files', lbl_drop_or_click:'Drag & drop or click',
+    lbl_attach_case:'Attach to Case', lbl_select_case:'— Select a case —',
+    fdz_title:'Drop files here or click to upload',
+    fdz_sub:'Select a case above before uploading',
+    ft_pdf:'PDF Documents', ft_doc:'Documents & Text', ft_img:'Images', ft_xls:'Spreadsheets', ft_other:'Other Files',
+    btn_preview:'Preview', btn_download:'Download', btn_delete_file:'Delete',
+    tl_all:'All', tl_cases:'📁 Cases', tl_warnings:'⚠ Warnings', tl_files:'📎 Files',
+    tl_sorted:'SORTED NEWEST FIRST',
+    tl_event:'event', tl_events:'events',
+    tl_case_opened:'Case opened:', tl_warning:'Warning:', tl_subcase:'Sub-case:', tl_file_uploaded:'File uploaded:',
+    modal_new_client:'New Client',
+    lbl_name:'Full Name / Company', ph_name:'e.g. Ahmet Demir',
+    lbl_email:'Email', ph_email:'you@lawfirm.com',
+    lbl_phone:'Phone', ph_phone:'+90...',
+    lbl_type:'Type', opt_individual:'Individual', opt_corporate:'Corporate',
+    lbl_since:'Client Since',
+    btn_cancel:'Cancel', btn_create_client:'Create Client',
+    modal_new_case:'New Case',
+    lbl_case_title:'Case Title', ph_case_title:'e.g. Contract Dispute',
+    lbl_case_id:'Case ID (optional)', ph_case_id:'Auto-generated if blank',
+    lbl_description:'Description', ph_description:'Brief description…',
+    lbl_status:'Status', opt_active:'Active', opt_pending:'Pending', opt_closed:'Closed',
+    lbl_date:'Date',
+    btn_add_case:'Add Case',
+    modal_edit_case:'Edit Case', btn_save:'Save',
+    modal_new_subcase:'New Sub-Case',
+    lbl_subcase_title:'Sub-Case Title', ph_subcase_title:'e.g. Evidence Review',
+    lbl_subcase_id:'Sub-Case ID (optional)',
+    btn_add_subcase:'Add Sub-Case',
+    modal_new_warning:'New Warning / Reminder',
+    lbl_warn_text:'Warning Text', ph_warn_text:'e.g. Invoice due in 15 days',
+    lbl_warn_type:'Type', lbl_urgency:'Urgency', lbl_days_due:'Days Until Due',
+    lbl_due_date:'Due Date',
+    opt_high:'🔴 High', opt_medium:'🟡 Medium', opt_low:'🟢 Low',
+    btn_add_warning_modal:'Add Warning',
+    modal_edit_warning:'Edit Warning', btn_save_changes:'Save Changes',
+    confirm_delete_case:'Delete this case and all its sub-cases?',
+    confirm_delete_subcase:'Delete this sub-case?',
+    confirm_dismiss_warning:'Dismiss this warning?',
+    confirm_delete_file:'Delete this file? This cannot be undone.',
+    day:'day', days:'days',
+    btn_toggle:'Toggle', btn_edit:'Edit', btn_files_count:'📎 {{n}} Files', btn_sub_case:'+ Sub-Case',
+    preview_no_preview:'Preview not available in this environment.\nDownload the file to open it.',
+    btn_download_file:'Download File', btn_close:'Close',
+    status_active:'Active', status_pending:'Pending', status_closed:'Closed',
+    warn_types:['Billing','Legal Deadline','Court Hearing','Document Submission','Mediation','Statute of Limitations','Filing Fee','Appointment','Contract Renewal','Compliance','Other'],
+    title:'Lexis — Client Dashboard'
+  }
+};
+
+let lang=localStorage.getItem('lexis_lang')||'tr';
+
+function setLang(l){
+  lang=l; localStorage.setItem('lexis_lang',l);
+  document.documentElement.lang=l;
+  document.title=T[l].title;
+  document.getElementById('btn-tr').classList.toggle('active',l==='tr');
+  document.getElementById('btn-en').classList.toggle('active',l==='en');
+  const t=T[l];
+  // Static elements
+  document.getElementById('sidebar-sub').textContent=t.sidebar_sub;
+  document.getElementById('nav-sec-main').textContent=t.nav_sec_main;
+  document.getElementById('nav-sec-quick').textContent=t.nav_sec_quick;
+  // data-i18n elements
+  document.querySelectorAll('[data-i18n]').forEach(el=>{
+    const k=el.getAttribute('data-i18n');
+    if(t[k]!==undefined) el.textContent=t[k];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el=>{
+    const k=el.getAttribute('data-i18n-placeholder');
+    if(t[k]!==undefined) el.placeholder=t[k];
+  });
+  // Update view title
+  const vtMap={clients:t.view_clients,warnings:t.view_warnings,cases:t.view_cases,urgent:t.view_urgent};
+  if(vtMap[currentView]) document.getElementById('view-title').textContent=vtMap[currentView];
+  // Re-render everything
+  renderCurrentView();
+  if(selectedClient&&document.getElementById('detail-panel').classList.contains('open')){
+    refreshPanelHeader(); renderPanel();
+  }
+}
+
+// ═══════════════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════════════
+let clients=[
+  {id:1,name:'Mehmet Yılmaz',email:'m.yilmaz@email.com',phone:'+90 532 111 2233',type:'Corporate',since:'2022-03',
+   cases:[
+     {id:'C-001',title:'Kira Sözleşmesi Anlaşmazlığı',status:'Active',date:'2024-01-10',
+      desc:'5 yıllık bir ticari kira sözleşmesindeki erken fesih maddesine ilişkin anlaşmazlık.',
+      subcases:[
+        {id:'C-001a',title:'Alt Kiralama Maddesi İncelemesi',status:'Active',date:'2024-02-01',desc:'Ana sözleşmedeki alt kiralama hükümlerinin incelenmesi.'},
+        {id:'C-001b',title:'Tazminat Değerlendirmesi',status:'Pending',date:'2024-02-14',desc:'Anlaşmazlıktan kaynaklanan mali zararların hesaplanması.'}
+      ]},
+     {id:'C-002',title:'Marka Tescili',status:'Closed',date:'2023-06-20',
+      desc:'Marka logosu ve ticari adın tescili.',subcases:[]}
+   ],
+   warnings:[
+     {id:'w1',text:'Fatura #1042 ödeme vadesi',urgency:'high',days:3,date:'2024-12-28',type:'Fatura'},
+     {id:'w2',text:'Mahkeme duruşması hazırlığı gerekli',urgency:'high',days:7,date:'2025-01-03',type:'Hukuki Süre'}
+   ],
+   files:[
+     {id:'f1',name:'kira_sozlesmesi_asil.pdf',size:245000,type:'application/pdf',category:'pdf',caseId:'C-001',uploadedAt:'2024-01-12',note:'İmzalı orijinal sözleşme'},
+     {id:'f2',name:'alt_kiralama_analizi.docx',size:82000,type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',category:'doc',caseId:'C-001',uploadedAt:'2024-02-03',note:'Avukat analizi'},
+     {id:'f3',name:'marka_logo_v2.png',size:520000,type:'image/png',category:'img',caseId:'C-002',uploadedAt:'2023-07-01',note:'Son logo versiyonu'},
+     {id:'f4',name:'zarar_hesaplama.xlsx',size:65000,type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',category:'xls',caseId:'C-001a',uploadedAt:'2024-02-16',note:'Tam mali döküm'}
+   ]
+  },
+  {id:2,name:'Ayşe Kara',email:'ayse.kara@corp.com',phone:'+90 555 334 5566',type:'Individual',since:'2023-07',
+   cases:[
+     {id:'C-010',title:'Boşanma Davası',status:'Active',date:'2023-09-01',
+      desc:'Velayet ve mal paylaşımlı çekişmeli boşanma davası.',
+      subcases:[
+        {id:'C-010a',title:'Çocuk Velayeti Anlaşması',status:'Active',date:'2023-09-15',desc:'İki küçük çocuk için velayet şartlarının müzakeresi.'}
+      ]}
+   ],
+   warnings:[
+     {id:'w3',text:'Arabuluculuk seansı — katılımı onaylayın',urgency:'medium',days:12,date:'2025-01-08',type:'Arabuluculuk'},
+     {id:'w4',text:'Belge teslim son tarihi',urgency:'high',days:2,date:'2024-12-27',type:'Hukuki Süre'}
+   ],
+   files:[
+     {id:'f5',name:'bosanma_dilekce.pdf',size:190000,type:'application/pdf',category:'pdf',caseId:'C-010',uploadedAt:'2023-09-02',note:'Sunulan dilekçe'},
+     {id:'f6',name:'mal_listesi.docx',size:44000,type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',category:'doc',caseId:'C-010',uploadedAt:'2023-10-05',note:'Mülk envanteri'}
+   ]
+  },
+  {id:3,name:'Global Lojistik A.Ş.',email:'legal@globalloj.com',phone:'+90 212 444 7788',type:'Corporate',since:'2021-11',
+   cases:[
+     {id:'C-020',title:'Gümrük İhlali Savunması',status:'Active',date:'2024-03-05',desc:'Gümrük cezasına karşı idari savunma.',subcases:[]},
+     {id:'C-021',title:'İş Sözleşmesi Hazırlanması',status:'Closed',date:'2023-12-01',desc:'50+ çalışan için standart iş sözleşmeleri.',subcases:[]},
+     {id:'C-022',title:'KVKK Uyum Denetimi',status:'Active',date:'2024-05-10',
+      desc:'AB veri uyumu için tam denetim ve boşluk analizi.',
+      subcases:[
+        {id:'C-022a',title:'Veri İşleme Anlaşmaları',status:'Active',date:'2024-05-15',desc:'Üçüncü taraf satıcılarla VİA hazırlanması.'}
+      ]}
+   ],
+   warnings:[
+     {id:'w5',text:'Yıllık hizmet sözleşmesi yenilemesi',urgency:'medium',days:20,date:'2025-01-15',type:'Fatura'}
+   ],
+   files:[
+     {id:'f7',name:'gumruk_cezasi_tebligat.pdf',size:310000,type:'application/pdf',category:'pdf',caseId:'C-020',uploadedAt:'2024-03-07',note:'Resmi tebligat'},
+     {id:'f8',name:'is_sozlesmeleri_toplu.zip',size:1200000,type:'application/zip',category:'other',caseId:'C-021',uploadedAt:'2023-12-10',note:'54 imzalı sözleşme'},
+     {id:'f9',name:'kvkk_denetim_raporu.pdf',size:890000,type:'application/pdf',category:'pdf',caseId:'C-022',uploadedAt:'2024-05-12',note:'İlk denetim bulguları'}
+   ]
+  }
+];
+
+let selectedClient=null, activeTab='cases', currentView='clients', activeUploadCaseId='';
+
+// ═══════════════════════════════════════════════════════
+// UTILITIES
+// ═══════════════════════════════════════════════════════
+function esc(s){ if(s===null||s===undefined)return''; return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;').replace(/'/g,'&#39;'); }
+function barPct(d){ return Math.max(0,Math.min(100,((30-d)/30)*100)); }
+function barClass(u){ return u==='high'?'fill-high':u==='medium'?'fill-med':'fill-low'; }
+function urgencyIcon(u){ return u==='high'?'🔴':u==='medium'?'🟡':'🟢'; }
+function badgeClass(u){ return u==='high'?'badge-danger':u==='medium'?'badge-warn':'badge-ok'; }
+function urgencyBar(u,d){ return `<div class="urgency-bar-wrap"><div class="urgency-bar-fill ${barClass(u)}" style="width:${barPct(d)}%"></div></div>`; }
+function fmtSize(b){ if(b<1024)return b+'B'; if(b<1048576)return(b/1024).toFixed(0)+'KB'; return(b/1048576).toFixed(1)+'MB'; }
+function todayStr(){ return new Date().toISOString().split('T')[0]; }
+function t(){ return T[lang]; }
+
+function detectCategory(file){
+  const mime=file.type||''; const ext=(file.name||'').split('.').pop().toLowerCase();
+  if(mime==='application/pdf'||ext==='pdf') return 'pdf';
+  if(mime.startsWith('image/')||['jpg','jpeg','png','gif','webp','svg','bmp'].includes(ext)) return 'img';
+  if(['doc','docx','odt','rtf','txt'].includes(ext)||mime.includes('word')||mime.includes('text')) return 'doc';
+  if(['xls','xlsx','csv','ods'].includes(ext)||mime.includes('spreadsheet')||mime.includes('excel')) return 'xls';
+  return 'other';
+}
+
+function fileTypeCfg(cat){
+  const m={pdf:{label:()=>t().ft_pdf,icon:'PDF',cls:'fi-pdf',color:'var(--file-pdf)',emoji:'📄'},
+    doc:{label:()=>t().ft_doc,icon:'DOC',cls:'fi-doc',color:'var(--file-doc)',emoji:'📝'},
+    img:{label:()=>t().ft_img,icon:'IMG',cls:'fi-img',color:'var(--file-img)',emoji:'🖼'},
+    xls:{label:()=>t().ft_xls,icon:'XLS',cls:'fi-xls',color:'var(--file-xls)',emoji:'📊'},
+    other:{label:()=>t().ft_other,icon:'FILE',cls:'fi-other',color:'var(--file-other)',emoji:'📎'}};
+  return m[cat]||m.other;
+}
+
+function allCaseOptions(client){
+  const opts=[];
+  (client.cases||[]).forEach(cs=>{
+    opts.push({id:cs.id,label:`${cs.id} — ${cs.title}`});
+    (cs.subcases||[]).forEach(sc=>opts.push({id:sc.id,label:`  ↳ ${sc.id} — ${sc.title}`}));
+  });
+  return opts;
+}
+function caseTitleById(client,caseId){
+  for(const cs of client.cases||[]){
+    if(cs.id===caseId) return cs.title;
+    for(const sc of cs.subcases||[]){ if(sc.id===caseId) return sc.title; }
+  }
+  return caseId;
+}
+function statusBadgeClass(s){ return s==='Active'?'badge-warn':s==='Pending'?'badge-info':'badge-ok'; }
+function statusLabel(s){ const m={Active:t().status_active,Pending:t().status_pending,Closed:t().status_closed}; return m[s]||s; }
+
+// ═══════════════════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════════════════
+function setView(v,navEl){
+  currentView=v;
+  document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
+  if(navEl) navEl.classList.add('active');
+  const titles={clients:t().view_clients,warnings:t().view_warnings,cases:t().view_cases,urgent:t().view_urgent};
+  document.getElementById('view-title').textContent=titles[v]||v;
+  renderCurrentView();
+}
+function renderCurrentView(){
+  if(currentView==='clients'||currentView==='urgent'){
+    let mc=document.getElementById('main-content');
+    if(!document.getElementById('client-grid')) mc.innerHTML='<div class="client-grid" id="client-grid"></div>';
+    renderClients();
+  } else if(currentView==='warnings') renderAllWarnings();
+  else if(currentView==='cases') renderAllCases();
+}
+
+// ═══════════════════════════════════════════════════════
+// CLIENT GRID
+// ═══════════════════════════════════════════════════════
+function renderClients(){
+  const q=(document.getElementById('search').value||'').toLowerCase();
+  let grid=document.getElementById('client-grid');
+  if(!grid){ document.getElementById('main-content').innerHTML='<div class="client-grid" id="client-grid"></div>'; grid=document.getElementById('client-grid'); }
+  let list=[...clients];
+  if(currentView==='urgent') list=list.filter(c=>c.warnings.some(w=>w.urgency==='high'));
+  if(q) list=list.filter(c=>c.name.toLowerCase().includes(q)||c.email.toLowerCase().includes(q));
+  if(!list.length){ grid.innerHTML=`<div class="empty-state" style="grid-column:1/-1"><div class="ei">🔍</div><p>${t().empty_search}</p></div>`; return; }
+  grid.innerHTML=list.map(c=>{
+    const urgent=c.warnings.filter(w=>w.urgency==='high').length;
+    const active=c.cases.filter(x=>x.status==='Active').length;
+    const fcount=(c.files||[]).length;
+    const isCorpType=c.type==='Corporate';
+    return `<div class="client-card${selectedClient&&selectedClient.id===c.id?' selected':''}" onclick="openClient(${c.id})">
+      ${urgent?`<div class="warn-count">${urgent}</div>`:''}
+      <div class="client-avatar">${esc(c.name[0])}</div>
+      <div class="client-name">${esc(c.name)}</div>
+      <div class="client-meta">${esc(c.email)}</div>
+      <div class="client-badges">
+        <span class="badge badge-info">${isCorpType?t().badge_corporate:t().badge_individual}</span>
+        ${active?`<span class="badge badge-warn">${active} ${active>1?t().badge_active_cases_pl:t().badge_active_cases}</span>`:`<span class="badge badge-ok">${t().badge_no_active}</span>`}
+        ${c.warnings.length?`<span class="badge badge-warn">${c.warnings.length} ${c.warnings.length>1?t().badge_warnings_pl:t().badge_warning}</span>`:''}
+        ${fcount?`<span class="badge badge-info">📎 ${fcount} ${fcount>1?t().badge_files_pl:t().badge_file}</span>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// ALL WARNINGS / CASES
+// ═══════════════════════════════════════════════════════
+function renderAllWarnings(){
+  const mc=document.getElementById('main-content');
+  const all=clients.flatMap(c=>c.warnings.map(w=>({...w,clientName:c.name,clientId:c.id}))).sort((a,b)=>a.days-b.days);
+  if(!all.length){ mc.innerHTML=`<div class="empty-state"><div class="ei">✅</div><p>${t().empty_warnings}</p></div>`; return; }
+  mc.innerHTML='<div class="list-view">'+all.map(w=>`
+    <div class="warn-item" style="cursor:pointer" onclick="openClientExternal(${w.clientId})">
+      <div class="warn-icon">${urgencyIcon(w.urgency)}</div>
+      <div class="warn-body">
+        <div class="warn-text">${esc(w.text)}</div>
+        <div class="warn-meta">${esc(w.clientName)} · ${esc(w.type)} · ${w.days} ${w.days!==1?t().days:t().day}</div>
+        ${urgencyBar(w.urgency,w.days)}
+      </div>
+      <span class="warn-level badge ${badgeClass(w.urgency)}">${w.urgency.toUpperCase()}</span>
+    </div>`).join('')+'</div>';
+}
+function renderAllCases(){
+  const mc=document.getElementById('main-content');
+  const all=clients.flatMap(c=>c.cases.map(x=>({...x,clientName:c.name,clientId:c.id})));
+  if(!all.length){ mc.innerHTML=`<div class="empty-state"><div class="ei">📁</div><p>${t().empty_cases}</p></div>`; return; }
+  mc.innerHTML='<div class="list-view">'+all.map(x=>`
+    <div class="case-card" style="cursor:pointer" onclick="openClientExternal(${x.clientId})">
+      <div class="case-header">
+        <div><div class="case-number">${esc(x.id)}</div><div class="case-title-text">${esc(x.title)}</div></div>
+        <span class="badge ${statusBadgeClass(x.status)}">${statusLabel(x.status)}</span>
+      </div>
+      <div class="case-desc">${esc(x.desc)}</div>
+      <div style="margin-top:7px;font-size:10px;color:var(--muted);font-family:'DM Mono',monospace">${esc(x.clientName)} · ${x.subcases.length} alt dava</div>
+    </div>`).join('')+'</div>';
+}
+
+// ═══════════════════════════════════════════════════════
+// PANEL
+// ═══════════════════════════════════════════════════════
+function openClientExternal(id){ selectedClient=clients.find(c=>c.id===id); if(!selectedClient)return; refreshPanelHeader(); activeTab='cases'; updateTabUI(); renderPanel(); document.getElementById('detail-panel').classList.add('open'); }
+function openClient(id){ selectedClient=clients.find(c=>c.id===id); if(!selectedClient)return; refreshPanelHeader(); activeTab='cases'; updateTabUI(); renderPanel(); document.getElementById('detail-panel').classList.add('open'); if(currentView==='clients'||currentView==='urgent') renderClients(); }
+function refreshPanelHeader(){ document.getElementById('panel-name').textContent=selectedClient.name; document.getElementById('panel-meta').textContent=`${selectedClient.type==='Corporate'?t().badge_corporate:t().badge_individual} · ${selectedClient.since} · ${selectedClient.email}`; }
+function closePanel(){ document.getElementById('detail-panel').classList.remove('open'); selectedClient=null; if(currentView==='clients'||currentView==='urgent') renderClients(); }
+function switchTab(tab){ activeTab=tab; updateTabUI(); renderPanel(); }
+function updateTabUI(){ ['cases','warnings','files','timeline'].forEach(tab=>{ const el=document.getElementById('tab-'+tab); if(el) el.classList.toggle('active',tab===activeTab); }); }
+function renderPanel(){
+  const body=document.getElementById('panel-body');
+  if(!selectedClient){ body.innerHTML=''; return; }
+  if(activeTab==='cases') body.innerHTML=renderCasesTab();
+  else if(activeTab==='warnings') body.innerHTML=renderWarningsTab();
+  else if(activeTab==='files') body.innerHTML=renderFilesTab();
+  else body.innerHTML=renderTimelineTab();
+}
+
+// ═══════════════════════════════════════════════════════
+// CASES TAB
+// ═══════════════════════════════════════════════════════
+function renderCasesTab(){
+  const c=selectedClient; const tl=t();
+  let h=`<div class="section-title">${tl.sec_cases} <button class="btn btn-primary btn-sm" onclick="openAddCase()">${tl.btn_new_case}</button></div>`;
+  if(!c.cases.length) return h+`<div class="empty-state"><div class="ei">📁</div><p>${tl.empty_cases}</p></div>`;
+  h+=c.cases.map(cs=>{
+    const cid=encodeURIComponent(cs.id);
+    const caseFiles=(c.files||[]).filter(f=>f.caseId===cs.id);
+    const subFilesCount=c.cases.flatMap(()=>cs.subcases.map(sc=>(c.files||[]).filter(f=>f.caseId===sc.id))).flat().length;
+    const totalFiles=caseFiles.length+subFilesCount;
+    const subs=cs.subcases.length?'<div class="subcase-list">'+cs.subcases.map(sc=>{
+      const sid=encodeURIComponent(sc.id);
+      const scFiles=(c.files||[]).filter(f=>f.caseId===sc.id);
+      return `<div class="subcase-item">
+        <div class="subcase-header">
+          <div><div class="subcase-num">${esc(sc.id)}</div><div class="subcase-title">${esc(sc.title)}</div></div>
+          <div style="display:flex;gap:3px;align-items:center">
+            ${scFiles.length?`<span class="badge badge-info" style="font-size:8px">📎 ${scFiles.length}</span>`:''}
+            <span class="badge ${statusBadgeClass(sc.status)}" style="font-size:8px">${statusLabel(sc.status)}</span>
+            <button class="btn btn-sm btn-danger" style="font-size:9px;padding:2px 5px" onclick="deleteSubcase('${cid}','${sid}')">✕</button>
+          </div>
+        </div>
+        <div style="font-size:10px;color:var(--muted);margin-top:3px">${esc(sc.desc)}</div>
+      </div>`;
+    }).join('')+'</div>':'';
+    return `<div class="case-card">
+      <div class="case-header">
+        <div><div class="case-number">${esc(cs.id)}</div><div class="case-title-text">${esc(cs.title)}</div></div>
+        <div style="display:flex;align-items:center;gap:5px;flex-wrap:wrap">
+          <span class="badge ${statusBadgeClass(cs.status)}">${statusLabel(cs.status)}</span>
+          <button class="btn btn-sm btn-outline" style="font-size:9px;padding:2px 6px" onclick="toggleCase('${cid}')">${tl.btn_toggle}</button>
+          <button class="btn btn-sm btn-danger" style="font-size:9px;padding:2px 6px" onclick="deleteCase('${cid}')">✕</button>
+        </div>
+      </div>
+      <div class="case-desc">${esc(cs.desc)}</div>
+      <div class="case-actions">
+        <button class="btn btn-outline btn-sm" onclick="openAddSubcase('${cid}')">${tl.btn_sub_case}</button>
+        <button class="btn btn-outline btn-sm" onclick="openEditCase('${cid}')">${tl.btn_edit}</button>
+        <button class="btn btn-outline btn-sm" onclick="switchTab('files');setTimeout(()=>{preselectCase('${cid}')},40)">📎 ${totalFiles}</button>
+      </div>
+      ${subs}
+    </div>`;
+  }).join('');
+  return h;
+}
+
+// ═══════════════════════════════════════════════════════
+// FILES TAB
+// ═══════════════════════════════════════════════════════
+function renderFilesTab(){
+  const c=selectedClient; const tl=t();
+  const files=c.files||[];
+  const byCat={pdf:0,doc:0,img:0,xls:0,other:0};
+  files.forEach(f=>{ byCat[f.category]=(byCat[f.category]||0)+1; });
+  const totalSize=files.reduce((s,f)=>s+(f.size||0),0);
+  const caseOpts=allCaseOptions(c);
+
+  let h=`<div class="files-stats">
+    <div class="fstat"><div class="fstat-num" style="color:var(--accent)">${files.length}</div><div class="fstat-label">${tl.lbl_total_files}</div></div>
+    <div class="fstat"><div class="fstat-num" style="color:var(--file-pdf)">${byCat.pdf||0}</div><div class="fstat-label">${tl.lbl_pdf}</div></div>
+    <div class="fstat"><div class="fstat-num" style="color:var(--file-doc)">${byCat.doc||0}</div><div class="fstat-label">${tl.lbl_docs}</div></div>
+    <div class="fstat"><div class="fstat-num" style="color:var(--muted)">${fmtSize(totalSize)}</div><div class="fstat-label">${tl.lbl_size}</div></div>
+  </div>
+  <div class="section-title">${tl.lbl_upload} <span style="color:var(--muted);font-size:9px;font-family:'DM Sans',sans-serif">${tl.lbl_drop_or_click}</span></div>
+  <div class="file-case-select">
+    <label>${tl.lbl_attach_case}</label>
+    <select id="upload-case-select" onchange="activeUploadCaseId=this.value">
+      <option value="">${tl.lbl_select_case}</option>
+      ${caseOpts.map(o=>`<option value="${esc(o.id)}"${o.id===activeUploadCaseId?' selected':''}>${esc(o.label)}</option>`).join('')}
+    </select>
+  </div>
+  <div class="file-drop-zone" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)" ondrop="handleFileDrop(event)">
+    <input type="file" multiple accept="*/*" onchange="handleFileInputChange(event)" title="">
+    <span class="fdz-icon">📂</span>
+    <div class="fdz-title">${tl.fdz_title}</div>
+    <div class="fdz-sub">${tl.fdz_sub}</div>
+    <div class="fdz-types">
+      <span class="fdz-type-tag" style="color:var(--file-pdf)">PDF</span>
+      <span class="fdz-type-tag" style="color:var(--file-doc)">DOC</span>
+      <span class="fdz-type-tag" style="color:var(--file-img)">IMG</span>
+      <span class="fdz-type-tag" style="color:var(--file-xls)">XLS</span>
+      <span class="fdz-type-tag" style="color:var(--file-other)">ZIP</span>
+    </div>
+  </div>
+  <div id="upload-queue"></div>
+  <div class="section-title">${tl.sec_files}</div>`;
+
+  if(!files.length){
+    h+=`<div class="empty-state"><div class="ei">📭</div><p>${tl.empty_files}</p></div>`;
+  } else {
+    ['pdf','doc','img','xls','other'].forEach(cat=>{
+      const group=files.filter(f=>f.category===cat);
+      if(!group.length) return;
+      const cfg=fileTypeCfg(cat);
+      h+=`<div class="file-type-group">
+        <div class="ftg-header">
+          <div class="ftg-icon ${cfg.cls}">${cfg.icon}</div>
+          <span class="ftg-label" style="color:${cfg.color}">${cfg.label()}</span>
+          <span class="ftg-count">${group.length}</span>
+        </div>`;
+      group.forEach(f=>{
+        const fid=encodeURIComponent(f.id);
+        const caseLabel=caseTitleById(c,f.caseId);
+        h+=`<div class="file-item">
+          <div class="file-icon ${cfg.cls}">${cfg.icon}</div>
+          <div class="file-info">
+            <div class="file-name" title="${esc(f.name)}">${esc(f.name)}</div>
+            <div class="file-meta">
+              <span class="file-case-tag">${esc(f.caseId)}</span>
+              <span>${esc(caseLabel)}</span>
+              <span>${fmtSize(f.size||0)}</span>
+              <span>${esc(f.uploadedAt)}</span>
+            </div>
+            ${f.note?`<div style="font-size:9px;color:var(--muted);margin-top:2px;font-style:italic">${esc(f.note)}</div>`:''}
+          </div>
+          <div class="file-actions">
+            <button class="file-action-btn" onclick="previewFile('${fid}')">${tl.btn_preview}</button>
+            <button class="file-action-btn" onclick="downloadFile('${fid}')">${tl.btn_download}</button>
+            <button class="file-action-btn del" onclick="deleteFile('${fid}')">✕</button>
+          </div>
+        </div>`;
+      });
+      h+='</div>';
+    });
+  }
+  return h;
+}
+
+function preselectCase(encodedId){ activeUploadCaseId=decodeURIComponent(encodedId); const sel=document.getElementById('upload-case-select'); if(sel) sel.value=activeUploadCaseId; }
+function handleDragOver(e){ e.preventDefault(); document.getElementById('file-drop-zone')?.classList.add('drag-over'); }
+function handleDragLeave(){ document.getElementById('file-drop-zone')?.classList.remove('drag-over'); }
+function handleFileDrop(e){ e.preventDefault(); document.getElementById('file-drop-zone')?.classList.remove('drag-over'); processFiles(Array.from(e.dataTransfer.files)); }
+function handleFileInputChange(e){ processFiles(Array.from(e.target.files)); e.target.value=''; }
+function processFiles(fileList){
+  if(!fileList.length) return;
+  const caseId=document.getElementById('upload-case-select')?.value||activeUploadCaseId||'';
+  if(!caseId){ alert(t().lbl_select_case); return; }
+  const queue=document.getElementById('upload-queue'); if(!queue) return;
+  fileList.forEach((file,idx)=>{
+    const tempId='up-'+Date.now()+'-'+idx;
+    const qItem=document.createElement('div'); qItem.className='upload-progress'; qItem.id=tempId;
+    qItem.innerHTML=`<div class="up-icon">⏳</div><div class="up-info"><div class="up-name">${esc(file.name)}</div><div class="up-bar-wrap"><div class="up-bar" id="bar-${tempId}" style="width:0%"></div></div></div>`;
+    queue.appendChild(qItem);
+    let pct=0; const interval=setInterval(()=>{ pct+=Math.random()*25+5; if(pct>=100){ pct=100; clearInterval(interval); finishUpload(tempId,file,caseId); } const bar=document.getElementById('bar-'+tempId); if(bar) bar.style.width=Math.min(pct,100)+'%'; },200+idx*80);
+    const reader=new FileReader(); reader.onload=(e)=>{ file._dataUrl=e.target.result; }; if(file.type.startsWith('image/')) reader.readAsDataURL(file);
+  });
+}
+function finishUpload(tempId,file,caseId){
+  document.getElementById(tempId)?.remove();
+  if(!selectedClient.files) selectedClient.files=[];
+  selectedClient.files.push({id:'f'+Date.now()+Math.random().toString(36).slice(2,5),name:file.name,size:file.size,type:file.type,category:detectCategory(file),caseId,uploadedAt:todayStr(),note:'',dataUrl:file._dataUrl||null});
+  renderPanel(); if(currentView==='clients'||currentView==='urgent') renderClients();
+}
+function previewFile(encodedId){
+  const fid=decodeURIComponent(encodedId); const f=(selectedClient.files||[]).find(x=>x.id===fid); if(!f){return;}
+  const cfg=fileTypeCfg(f.category); const tl=t();
+  let previewContent='';
+  if(f.category==='img'&&f.dataUrl) previewContent=`<img src="${f.dataUrl}" alt="${esc(f.name)}" style="max-width:100%;border-radius:6px;border:1px solid var(--border)">`;
+  else previewContent=`<div class="fpm-pdf-placeholder"><span class="ei">${cfg.emoji}</span><div style="font-size:13px;font-weight:500;margin-bottom:7px">${esc(f.name)}</div><div style="font-size:11px;color:var(--muted);margin-bottom:16px;white-space:pre-line">${tl.preview_no_preview}</div><button class="btn btn-primary btn-sm" onclick="downloadFile('${encodedId}')">${tl.btn_download_file}</button></div>`;
+  showModal(`<h3>${esc(f.name)}</h3>
+    <div style="margin-bottom:12px;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace">${esc(f.caseId)} · ${fmtSize(f.size||0)} · ${esc(f.uploadedAt)}</div>
+    ${previewContent}
+    <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">${tl.btn_close}</button></div>`);
+}
+function downloadFile(encodedId){
+  const fid=decodeURIComponent(encodedId); const f=(selectedClient.files||[]).find(x=>x.id===fid); if(!f)return;
+  if(f.dataUrl){ const a=document.createElement('a'); a.href=f.dataUrl; a.download=f.name; a.click(); }
+  else alert(`${t().btn_download}: ${f.name}`);
+}
+function deleteFile(encodedId){
+  const fid=decodeURIComponent(encodedId);
+  if(!confirm(t().confirm_delete_file)) return;
+  selectedClient.files=(selectedClient.files||[]).filter(x=>x.id!==fid);
+  renderPanel(); if(currentView==='clients'||currentView==='urgent') renderClients();
+}
+
+// ═══════════════════════════════════════════════════════
+// WARNINGS TAB
+// ═══════════════════════════════════════════════════════
+function renderWarningsTab(){
+  const tl=t();
+  const sorted=[...selectedClient.warnings].sort((a,b)=>a.days-b.days);
+  let h=`<div class="section-title">${tl.sec_warnings} <button class="btn btn-primary btn-sm" onclick="openAddWarning()">${tl.btn_add_warning}</button></div>`;
+  if(!sorted.length) return h+`<div class="empty-state"><div class="ei">✅</div><p>${tl.empty_warnings}</p></div>`;
+  return h+sorted.map(w=>{
+    const wid=encodeURIComponent(w.id);
+    return `<div class="warn-item">
+      <div class="warn-icon">${urgencyIcon(w.urgency)}</div>
+      <div class="warn-body">
+        <div class="warn-text">${esc(w.text)}</div>
+        <div class="warn-meta">${esc(w.type)} · ${w.days} ${w.days!==1?tl.days:tl.day}</div>
+        ${urgencyBar(w.urgency,w.days)}
+        <div class="warn-actions">
+          <button class="btn btn-outline btn-sm" onclick="openEditWarning('${wid}')">${tl.btn_edit}</button>
+          <button class="btn btn-danger btn-sm" onclick="deleteWarning('${wid}')">${tl.btn_toggle}</button>
+        </div>
+      </div>
+      <span class="warn-level badge ${badgeClass(w.urgency)}">${w.urgency.toUpperCase()}</span>
+    </div>`;
+  }).join('');
+}
+
+// ═══════════════════════════════════════════════════════
+// TIMELINE TAB
+// ═══════════════════════════════════════════════════════
+function renderTimelineTab(){
+  const c=selectedClient; const tl=t();
+  const evs=[
+    ...c.cases.map(cs=>({date:cs.date,label:tl.tl_case_opened+' '+cs.title,id:cs.id,color:'var(--accent)',emoji:'📁',type:'case'})),
+    ...c.warnings.map(w=>({date:w.date,label:tl.tl_warning+' '+w.text,id:w.id,color:'var(--warn)',emoji:'⚠',type:'warning'})),
+    ...c.cases.flatMap(cs=>cs.subcases.map(sc=>({date:sc.date,label:tl.tl_subcase+' '+sc.title,id:sc.id,color:'var(--muted)',emoji:'📂',type:'subcase'}))),
+    ...(c.files||[]).map(f=>{
+      const cfg=fileTypeCfg(f.category);
+      return {date:f.uploadedAt,label:tl.tl_file_uploaded+' '+f.name,sublabel:caseTitleById(c,f.caseId),id:f.id,color:cfg.color,emoji:cfg.emoji,type:'file',fileId:f.id,category:f.category,size:f.size,caseId:f.caseId};
+    })
+  ].sort((a,b)=>b.date.localeCompare(a.date));
+
+  if(!evs.length) return `<div class="empty-state"><div class="ei">📅</div><p>${tl.empty_no_events}</p></div>`;
+
+  let h=`<div style="display:flex;gap:5px;flex-wrap:wrap;margin-bottom:12px">
+    <button class="btn btn-sm" id="tf-all"  onclick="setTlFilter('all')"     style="background:var(--accent);color:#0e0f11;border:none">${tl.tl_all}</button>
+    <button class="btn btn-sm btn-outline" id="tf-case"    onclick="setTlFilter('case')">${tl.tl_cases}</button>
+    <button class="btn btn-sm btn-outline" id="tf-warning" onclick="setTlFilter('warning')">${tl.tl_warnings}</button>
+    <button class="btn btn-sm btn-outline" id="tf-file"    onclick="setTlFilter('file')">${tl.tl_files}</button>
+  </div><div id="tl-events">`;
+
+  h+=evs.map((e,i)=>{
+    const isFile=e.type==='file';
+    const fileChip=isFile?`<div style="margin-top:4px"><span class="tl-file-chip">${fileTypeCfg(e.category).icon} ${fmtSize(e.size||0)} · ${esc(e.caseId)}</span><button class="btn btn-sm btn-outline" style="font-size:8px;padding:1px 6px;margin-left:3px" onclick="previewFile('${encodeURIComponent(e.fileId)}')">${tl.btn_preview}</button></div>`:'';
+    return `<div class="timeline-item" data-type="${e.type}">
+      <div style="display:flex;flex-direction:column;align-items:center;flex-shrink:0">
+        <div class="tl-dot" style="background:${e.color}"></div>
+        ${i<evs.length-1?`<div style="width:1px;flex:1;min-height:14px;background:var(--border);margin-top:3px"></div>`:''}
+      </div>
+      <div class="tl-content">
+        <div class="tl-title">${e.emoji} ${esc(e.label)}</div>
+        ${e.sublabel?`<div style="font-size:10px;color:var(--muted);margin-top:1px">${esc(e.sublabel)}</div>`:''}
+        <div class="tl-date">${esc(e.date)} · ${esc(e.id)}</div>
+        ${fileChip}
+      </div>
+    </div>`;
+  }).join('');
+  h+=`</div><div class="section-title" style="margin-top:3px"><span>${evs.length} ${evs.length!==1?tl.tl_events:tl.tl_event}</span><span style="font-size:8px;color:var(--muted)">${tl.tl_sorted}</span></div>`;
+  return h;
+}
+
+let tlFilter='all';
+function setTlFilter(f){
+  tlFilter=f;
+  const btns={all:'tf-all',case:'tf-case',warning:'tf-warning',file:'tf-file'};
+  Object.entries(btns).forEach(([k,id])=>{ const el=document.getElementById(id); if(!el)return; if(k===f){el.style.background='var(--accent)';el.style.color='#0e0f11';el.style.border='none';}else{el.style.background='transparent';el.style.color='var(--text)';el.style.border='1px solid var(--border)';} });
+  document.querySelectorAll('.timeline-item').forEach(el=>{ el.style.display=(f==='all'||el.dataset.type===f)?'flex':'none'; });
+}
+
+// ═══════════════════════════════════════════════════════
+// MODALS
+// ═══════════════════════════════════════════════════════
+function showModal(html){ document.getElementById('modal-inner').innerHTML=html; document.getElementById('modal').classList.add('show'); }
+function closeModal(){ document.getElementById('modal').classList.remove('show'); }
+function handleModalClick(e){ if(e.target.id==='modal') closeModal(); }
+
+function statusOpts(sel){
+  const tl=t();
+  return ['Active','Pending','Closed'].map(s=>`<option value="${s}"${s===sel?' selected':''}>${s==='Active'?tl.opt_active:s==='Pending'?tl.opt_pending:tl.opt_closed}</option>`).join('');
+}
+
+// Add Client
+function openAddClient(){
+  const tl=t();
+  showModal(`<h3>${tl.modal_new_client}</h3>
+    <div class="form-group"><label class="form-label">${tl.lbl_name}</label><input class="form-input" id="nc-name" placeholder="${tl.ph_name}"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">${tl.lbl_email}</label><input class="form-input" id="nc-email" type="email" placeholder="${tl.ph_email}"></div>
+      <div class="form-group"><label class="form-label">${tl.lbl_phone}</label><input class="form-input" id="nc-phone" placeholder="${tl.ph_phone}"></div>
+    </div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">${tl.lbl_type}</label><select class="form-select" id="nc-type"><option value="Individual">${tl.opt_individual}</option><option value="Corporate">${tl.opt_corporate}</option></select></div>
+      <div class="form-group"><label class="form-label">${tl.lbl_since}</label><input class="form-input" id="nc-since" type="month"></div>
+    </div>
+    <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">${tl.btn_cancel}</button><button class="btn btn-primary" onclick="saveNewClient()">${tl.btn_create_client}</button></div>`);
+}
+function saveNewClient(){
+  const name=document.getElementById('nc-name').value.trim();
+  if(!name){ alert(t().lbl_name+' '+t().lbl_name); return; }
+  clients.push({id:Date.now(),name,email:document.getElementById('nc-email').value.trim(),phone:document.getElementById('nc-phone').value.trim(),type:document.getElementById('nc-type').value,since:document.getElementById('nc-since').value||new Date().toISOString().slice(0,7),cases:[],warnings:[],files:[]});
+  closeModal(); renderCurrentView();
+}
+
+// Add Case
+function openAddCase(){
+  const tl=t();
+  showModal(`<h3>${tl.modal_new_case}</h3>
+    <div class="form-group"><label class="form-label">${tl.lbl_case_title}</label><input class="form-input" id="ac-title" placeholder="${tl.ph_case_title}"></div>
+    <div class="form-group"><label class="form-label">${tl.lbl_case_id}</label><input class="form-input" id="ac-id" placeholder="${tl.ph_case_id}"></div>
+    <div class="form-group"><label class="form-label">${tl.lbl_description}</label><textarea class="form-textarea" id="ac-desc" placeholder="${tl.ph_description}"></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">${tl.lbl_status}</label><select class="form-select" id="ac-status">${statusOpts('Active')}</select></div>
+      <div class="form-group"><label class="form-label">${tl.lbl_date}</label><input class="form-input" id="ac-date" type="date" value="${todayStr()}"></div>
+    </div>
+    <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">${tl.btn_cancel}</button><button class="btn btn-primary" onclick="saveNewCase()">${tl.btn_add_case}</button></div>`);
+}
+function saveNewCase(){
+  const title=document.getElementById('ac-title').value.trim(); if(!title){ alert(t().lbl_case_title); return; }
+  const rawId=document.getElementById('ac-id').value.trim();
+  selectedClient.cases.push({id:rawId||'C-'+String(Date.now()).slice(-5),title,desc:document.getElementById('ac-desc').value.trim(),status:document.getElementById('ac-status').value,date:document.getElementById('ac-date').value,subcases:[]});
+  closeModal(); renderPanel(); if(currentView==='clients'||currentView==='urgent') renderClients();
+}
+
+// Edit Case
+function openEditCase(encodedId){
+  const cs=selectedClient.cases.find(c=>c.id===decodeURIComponent(encodedId)); if(!cs)return;
+  const tl=t();
+  showModal(`<h3>${tl.modal_edit_case}</h3>
+    <div class="form-group"><label class="form-label">${tl.lbl_case_title}</label><input class="form-input" id="ec-title"></div>
+    <div class="form-group"><label class="form-label">${tl.lbl_description}</label><textarea class="form-textarea" id="ec-desc"></textarea></div>
+    <div class="form-group"><label class="form-label">${tl.lbl_status}</label><select class="form-select" id="ec-status">${statusOpts(cs.status)}</select></div>
+    <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">${tl.btn_cancel}</button><button class="btn btn-primary" onclick="saveEditCase('${encodedId}')">${tl.btn_save_changes}</button></div>`);
+  document.getElementById('ec-title').value=cs.title; document.getElementById('ec-desc').value=cs.desc;
+}
+function saveEditCase(encodedId){
+  const cs=selectedClient.cases.find(c=>c.id===decodeURIComponent(encodedId)); if(!cs)return;
+  const ti=document.getElementById('ec-title').value.trim(); if(!ti){ alert(t().lbl_case_title); return; }
+  cs.title=ti; cs.desc=document.getElementById('ec-desc').value.trim(); cs.status=document.getElementById('ec-status').value;
+  closeModal(); renderPanel(); if(currentView==='clients'||currentView==='urgent') renderClients(); if(currentView==='cases') renderAllCases();
+}
+function toggleCase(encodedId){ const cs=selectedClient.cases.find(c=>c.id===decodeURIComponent(encodedId)); if(!cs)return; cs.status=cs.status==='Active'?'Closed':'Active'; renderPanel(); if(currentView==='clients'||currentView==='urgent') renderClients(); }
+function deleteCase(encodedId){ if(!confirm(t().confirm_delete_case))return; selectedClient.cases=selectedClient.cases.filter(c=>c.id!==decodeURIComponent(encodedId)); renderPanel(); if(currentView==='clients'||currentView==='urgent') renderClients(); if(currentView==='cases') renderAllCases(); }
+
+// Sub-cases
+function openAddSubcase(encodedParentId){
+  const tl=t();
+  showModal(`<h3>${tl.modal_new_subcase}</h3>
+    <div class="form-group"><label class="form-label">${tl.lbl_subcase_title}</label><input class="form-input" id="sc-title" placeholder="${tl.ph_subcase_title}"></div>
+    <div class="form-group"><label class="form-label">${tl.lbl_subcase_id}</label><input class="form-input" id="sc-id" placeholder="${tl.ph_case_id}"></div>
+    <div class="form-group"><label class="form-label">${tl.lbl_description}</label><textarea class="form-textarea" id="sc-desc" placeholder="${tl.ph_description}"></textarea></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">${tl.lbl_status}</label><select class="form-select" id="sc-status">${statusOpts('Active')}</select></div>
+      <div class="form-group"><label class="form-label">${tl.lbl_date}</label><input class="form-input" id="sc-date" type="date" value="${todayStr()}"></div>
+    </div>
+    <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">${tl.btn_cancel}</button><button class="btn btn-primary" onclick="saveSubcase('${encodedParentId}')">${tl.btn_add_subcase}</button></div>`);
+}
+function saveSubcase(encodedParentId){
+  const title=document.getElementById('sc-title').value.trim(); if(!title){ alert(t().lbl_subcase_title); return; }
+  const cs=selectedClient.cases.find(c=>c.id===decodeURIComponent(encodedParentId)); if(!cs)return;
+  cs.subcases.push({id:document.getElementById('sc-id').value.trim()||decodeURIComponent(encodedParentId)+'-'+String(Date.now()).slice(-4),title,desc:document.getElementById('sc-desc').value.trim(),status:document.getElementById('sc-status').value,date:document.getElementById('sc-date').value});
+  closeModal(); renderPanel();
+}
+function deleteSubcase(encodedCaseId,encodedScId){ if(!confirm(t().confirm_delete_subcase))return; const cs=selectedClient.cases.find(c=>c.id===decodeURIComponent(encodedCaseId)); if(!cs)return; cs.subcases=cs.subcases.filter(s=>s.id!==decodeURIComponent(encodedScId)); renderPanel(); }
+
+// Warnings CRUD
+function openAddWarning(){
+  const tl=t();
+  const warnTypes=tl.warn_types.map(tp=>`<option>${tp}</option>`).join('');
+  showModal(`<h3>${tl.modal_new_warning}</h3>
+    <div class="form-group"><label class="form-label">${tl.lbl_warn_text}</label><input class="form-input" id="aw-text" placeholder="${tl.ph_warn_text}"></div>
+    <div class="form-group"><label class="form-label">${tl.lbl_warn_type}</label><select class="form-select" id="aw-type">${warnTypes}</select></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">${tl.lbl_urgency}</label><select class="form-select" id="aw-urgency"><option value="high">${tl.opt_high}</option><option value="medium" selected>${tl.opt_medium}</option><option value="low">${tl.opt_low}</option></select></div>
+      <div class="form-group"><label class="form-label">${tl.lbl_days_due}</label><input class="form-input" id="aw-days" type="number" min="0" value="15"></div>
+    </div>
+    <div class="form-group"><label class="form-label">${tl.lbl_due_date}</label><input class="form-input" id="aw-date" type="date" value="${todayStr()}"></div>
+    <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">${tl.btn_cancel}</button><button class="btn btn-primary" onclick="saveWarning()">${tl.btn_add_warning_modal}</button></div>`);
+}
+function saveWarning(){
+  const text=document.getElementById('aw-text').value.trim(); if(!text){ alert(t().lbl_warn_text); return; }
+  const days=parseInt(document.getElementById('aw-days').value); if(isNaN(days)||days<0){ return; }
+  selectedClient.warnings.push({id:'w'+Date.now(),text,type:document.getElementById('aw-type').value,urgency:document.getElementById('aw-urgency').value,days,date:document.getElementById('aw-date').value});
+  closeModal(); renderPanel(); if(currentView==='clients'||currentView==='urgent') renderClients(); if(currentView==='warnings') renderAllWarnings();
+}
+function openEditWarning(encodedId){
+  const w=selectedClient.warnings.find(x=>x.id===decodeURIComponent(encodedId)); if(!w)return;
+  const tl=t();
+  const warnTypes=tl.warn_types.map(tp=>`<option>${tp}</option>`).join('');
+  showModal(`<h3>${tl.modal_edit_warning}</h3>
+    <div class="form-group"><label class="form-label">${tl.lbl_warn_text}</label><input class="form-input" id="ew-text"></div>
+    <div class="form-group"><label class="form-label">${tl.lbl_warn_type}</label><select class="form-select" id="ew-type">${warnTypes}</select></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">${tl.lbl_urgency}</label><select class="form-select" id="ew-urgency"><option value="high">${tl.opt_high}</option><option value="medium">${tl.opt_medium}</option><option value="low">${tl.opt_low}</option></select></div>
+      <div class="form-group"><label class="form-label">${tl.lbl_days_due}</label><input class="form-input" id="ew-days" type="number" min="0"></div>
+    </div>
+    <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">${tl.btn_cancel}</button><button class="btn btn-primary" onclick="saveEditWarning('${encodedId}')">${tl.btn_save_changes}</button></div>`);
+  document.getElementById('ew-text').value=w.text; document.getElementById('ew-type').value=w.type; document.getElementById('ew-urgency').value=w.urgency; document.getElementById('ew-days').value=w.days;
+}
+function saveEditWarning(encodedId){
+  const w=selectedClient.warnings.find(x=>x.id===decodeURIComponent(encodedId)); if(!w)return;
+  const text=document.getElementById('ew-text').value.trim(); const days=parseInt(document.getElementById('ew-days').value);
+  if(!text||isNaN(days)||days<0) return;
+  w.text=text; w.type=document.getElementById('ew-type').value; w.urgency=document.getElementById('ew-urgency').value; w.days=days;
+  closeModal(); renderPanel(); if(currentView==='clients'||currentView==='urgent') renderClients(); if(currentView==='warnings') renderAllWarnings();
+}
+function deleteWarning(encodedId){ if(!confirm(t().confirm_dismiss_warning))return; selectedClient.warnings=selectedClient.warnings.filter(w=>w.id!==decodeURIComponent(encodedId)); renderPanel(); if(currentView==='clients'||currentView==='urgent') renderClients(); if(currentView==='warnings') renderAllWarnings(); }
+
+// ═══════════════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════════════
+setLang(lang);
+renderCurrentView();
+</script>
+</body>
+</html>
