@@ -228,7 +228,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
     </div>
     <button class="btn btn-primary" style="width:100%;padding:10px;font-size:13px;margin-top:6px" onclick="doLogin()" id="login-btn">Giriş Yap</button>
     <p style="font-size:10px;color:var(--muted);text-align:center;margin-top:16px;font-family:'DM Mono',monospace;line-height:1.6" id="demo-hint">
-      Demo: admin@lexis.com / admin123<br>avukat@lexis.com / avukat123
+      Demo: <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="80e1e4ede9eec0ece5f8e9f3aee3efed">[email&#160;protected]</a> / admin123<br><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="543522213f35201438312c3d277a373b39">[email&#160;protected]</a> / avukat123
     </p>
   </div>
 </div>
@@ -301,7 +301,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min
   <div class="modal" id="modal-inner"></div>
 </div>
 
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 // ═══════════════════════════════════════════════════════
 // i18n
 // ═══════════════════════════════════════════════════════
@@ -557,7 +557,7 @@ function setLang(l){
 // DATA
 // ═══════════════════════════════════════════════════════
 let clients=[
-  {id:1,name:'Mehmet Yılmaz',email:'m.yilmaz@email.com',phone:'+90 532 111 2233',type:'Corporate',since:'2022-03',assignedTo:'u2',
+  {id:1,name:'Mehmet Yılmaz',email:'m.yilmaz@email.com',phone:'+90 532 111 2233',type:'Corporate',since:'2022-03',assignedTo:['u2'],
    cases:[
      {id:'C-001',title:'Kira Sözleşmesi Anlaşmazlığı',status:'Active',date:'2024-01-10',
       desc:'5 yıllık bir ticari kira sözleşmesindeki erken fesih maddesine ilişkin anlaşmazlık.',
@@ -579,7 +579,7 @@ let clients=[
      {id:'f4',name:'zarar_hesaplama.xlsx',size:65000,type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',category:'xls',caseId:'C-001a',uploadedAt:'2024-02-16',note:'Tam mali döküm'}
    ]
   },
-  {id:2,name:'Ayşe Kara',email:'ayse.kara@corp.com',phone:'+90 555 334 5566',type:'Individual',since:'2023-07',assignedTo:'u2',
+  {id:2,name:'Ayşe Kara',email:'ayse.kara@corp.com',phone:'+90 555 334 5566',type:'Individual',since:'2023-07',assignedTo:['u2'],
    cases:[
      {id:'C-010',title:'Boşanma Davası',status:'Active',date:'2023-09-01',
       desc:'Velayet ve mal paylaşımlı çekişmeli boşanma davası.',
@@ -596,7 +596,7 @@ let clients=[
      {id:'f6',name:'mal_listesi.docx',size:44000,type:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',category:'doc',caseId:'C-010',uploadedAt:'2023-10-05',note:'Mülk envanteri'}
    ]
   },
-  {id:3,name:'Global Lojistik A.Ş.',email:'legal@globalloj.com',phone:'+90 212 444 7788',type:'Corporate',since:'2021-11',assignedTo:'u3',
+  {id:3,name:'Global Lojistik A.Ş.',email:'legal@globalloj.com',phone:'+90 212 444 7788',type:'Corporate',since:'2021-11',assignedTo:['u3'],
    cases:[
      {id:'C-020',title:'Gümrük İhlali Savunması',status:'Active',date:'2024-03-05',desc:'Gümrük cezasına karşı idari savunma.',subcases:[]},
      {id:'C-021',title:'İş Sözleşmesi Hazırlanması',status:'Closed',date:'2023-12-01',desc:'50+ çalışan için standart iş sözleşmeleri.',subcases:[]},
@@ -635,7 +635,7 @@ function t(){ return T[lang]; }
 // Filter clients by role
 function getVisibleClients(){
   if(!currentUser||currentUser.role==='admin') return clients;
-  return clients.filter(c=>c.assignedTo===currentUser.id);
+  return clients.filter(c=>(c.assignedTo||[]).includes(currentUser.id));
 }
 
 function detectCategory(file){
@@ -711,13 +711,13 @@ function renderClients(){
     const active=c.cases.filter(x=>x.status==='Active').length;
     const fcount=(c.files||[]).length;
     const isCorpType=c.type==='Corporate';
-    const assignedUser=currentUser&&currentUser.role==='admin'?users.find(u=>u.id===c.assignedTo):null;
+    const assignedUsers=currentUser&&currentUser.role==='admin'?(c.assignedTo||[]).map(id=>users.find(u=>u.id===id)).filter(Boolean):[];
     return `<div class="client-card${selectedClient&&selectedClient.id===c.id?' selected':''}" onclick="openClient(${c.id})">
       ${urgent?`<div class="warn-count">${urgent}</div>`:''}
       <div class="client-avatar">${esc(c.name[0])}</div>
       <div class="client-name">${esc(c.name)}</div>
       <div class="client-meta">${esc(c.email)}</div>
-      ${assignedUser?`<div class="client-meta" style="margin-top:2px;color:var(--ok)">⚖ ${esc(assignedUser.name)}</div>`:''}
+      ${assignedUsers.length?`<div class="client-meta" style="margin-top:3px;display:flex;flex-wrap:wrap;gap:3px">${assignedUsers.map(u=>`<span style="color:var(--ok);font-size:10px">⚖ ${esc(u.name)}</span>`).join('<span style="color:var(--border)"> · </span>')}</div>`:''}
       <div class="client-badges">
         <span class="badge badge-info">${isCorpType?t().badge_corporate:t().badge_individual}</span>
         ${active?`<span class="badge badge-warn">${active} ${active>1?t().badge_active_cases_pl:t().badge_active_cases}</span>`:`<span class="badge badge-ok">${t().badge_no_active}</span>`}
@@ -1051,7 +1051,11 @@ function statusOpts(sel){
 function openAddClient(){
   if(!currentUser||currentUser.role!=='admin') return;
   const tl=t();
-  const lawyerOpts=users.filter(u=>u.role==='lawyer').map(u=>`<option value="${u.id}">${esc(u.name)}</option>`).join('');
+  const lawyerCheckboxes=users.filter(u=>u.role==='lawyer').map(u=>`
+    <label style="display:flex;align-items:center;gap:8px;padding:7px 10px;border:1px solid var(--border);border-radius:6px;cursor:pointer;transition:border .15s" onmouseover="this.style.borderColor='var(--accent)'" onmouseout="this.style.borderColor='var(--border)'">
+      <input type="checkbox" id="nc-assigned" value="${u.id}" style="accent-color:var(--accent);width:14px;height:14px;flex-shrink:0">
+      <span style="font-size:12px">${esc(u.name)}</span>
+    </label>`).join('');
   showModal(`<h3>${tl.modal_new_client}</h3>
     <div class="form-group"><label class="form-label">${tl.lbl_name}</label><input class="form-input" id="nc-name" placeholder="${tl.ph_name}"></div>
     <div class="form-row">
@@ -1062,14 +1066,17 @@ function openAddClient(){
       <div class="form-group"><label class="form-label">${tl.lbl_type}</label><select class="form-select" id="nc-type"><option value="Individual">${tl.opt_individual}</option><option value="Corporate">${tl.opt_corporate}</option></select></div>
       <div class="form-group"><label class="form-label">${tl.lbl_since}</label><input class="form-input" id="nc-since" type="month"></div>
     </div>
-    <div class="form-group"><label class="form-label">⚖ ${lang==='tr'?'ATANAN AVUKAT':'ASSIGNED LAWYER'}</label><select class="form-select" id="nc-assigned">${lawyerOpts}</select></div>
+    <div class="form-group"><label class="form-label">⚖ ${lang==='tr'?'ATANAN AVUKAT(LAR)':'ASSIGNED LAWYER(S)'}</label>
+      <div style="display:flex;flex-direction:column;gap:5px">${lawyerCheckboxes}</div>
+    </div>
     <div class="modal-actions"><button class="btn btn-outline" onclick="closeModal()">${tl.btn_cancel}</button><button class="btn btn-primary" onclick="saveNewClient()">${tl.btn_create_client}</button></div>`);
 }
 function saveNewClient(){
   const name=document.getElementById('nc-name').value.trim();
   if(!name){ alert(t().lbl_name); return; }
-  const assignedTo=document.getElementById('nc-assigned')?.value||currentUser?.id||'u2';
-  clients.push({id:Date.now(),name,email:document.getElementById('nc-email').value.trim(),phone:document.getElementById('nc-phone').value.trim(),type:document.getElementById('nc-type').value,since:document.getElementById('nc-since').value||new Date().toISOString().slice(0,7),assignedTo,cases:[],warnings:[],files:[]});
+  const assignedTo=Array.from(document.querySelectorAll('#nc-assigned input[type=checkbox]:checked')).map(cb=>cb.value);
+  if(!assignedTo.length){ const sel=document.getElementById('nc-assigned-single'); if(sel) assignedTo.push(sel.value); }
+  clients.push({id:Date.now(),name,email:document.getElementById('nc-email').value.trim(),phone:document.getElementById('nc-phone').value.trim(),type:document.getElementById('nc-type').value,since:document.getElementById('nc-since').value||new Date().toISOString().slice(0,7),assignedTo:assignedTo.length?assignedTo:[users.find(u=>u.role==='lawyer')?.id||'u2'],cases:[],warnings:[],files:[]});
   closeModal(); renderCurrentView();
 }
 
@@ -1205,7 +1212,7 @@ function renderSettings(){
       </thead>
       <tbody>
         ${users.map(u=>{
-          const assigned=clients.filter(c=>c.assignedTo===u.id);
+          const assigned=clients.filter(c=>(c.assignedTo||[]).includes(u.id));
           const initials=u.name.split(' ').map(w=>w[0]).join('').substring(0,2).toUpperCase();
           return `<tr>
             <td><div style="display:flex;align-items:center;gap:9px">
@@ -1234,23 +1241,27 @@ function renderSettings(){
     <div class="settings-section-title">${lang==='tr'?'Müvekkil Atama':'Client Assignment'}</div>
     <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:10px">
       ${clients.map(c=>{
-        const assignedUser=users.find(u=>u.id===c.assignedTo);
-        const lawyerOpts=users.filter(u=>u.role==='lawyer').map(u=>`<option value="${u.id}" ${u.id===c.assignedTo?'selected':''}>${esc(u.name)}</option>`).join('');
+        const assignedIds=c.assignedTo||[];
+        const lawyerChecks=users.filter(u=>u.role==='lawyer').map(u=>`
+          <label style="display:flex;align-items:center;gap:7px;padding:5px 8px;border-radius:5px;cursor:pointer;transition:background .15s" onmouseover="this.style.background='var(--surface)'" onmouseout="this.style.background='transparent'">
+            <input type="checkbox" value="${u.id}" ${assignedIds.includes(u.id)?'checked':''} style="accent-color:var(--accent);width:13px;height:13px;flex-shrink:0" onchange="toggleClientAssignment(${c.id},'${u.id}',this.checked)">
+            <span style="font-size:11px">${esc(u.name)}</span>
+          </label>`).join('');
         return `<div class="case-card">
-          <div style="font-weight:500;margin-bottom:6px">${esc(c.name)}</div>
+          <div style="font-weight:500;margin-bottom:3px">${esc(c.name)}</div>
           <div style="font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;margin-bottom:9px">${c.cases.length} ${lang==='tr'?'dava':'case'}</div>
-          <select class="form-select" style="font-size:11px;padding:5px 8px" onchange="reassignClient(${c.id},this.value)">
-            ${lawyerOpts}
-          </select>
+          <div style="display:flex;flex-direction:column;gap:2px">${lawyerChecks}</div>
         </div>`;
       }).join('')}
     </div>
   </div>`;
 }
 
-function reassignClient(clientId, userId){
+function toggleClientAssignment(clientId, userId, checked){
   const c=clients.find(x=>x.id===clientId); if(!c) return;
-  c.assignedTo=userId;
+  if(!Array.isArray(c.assignedTo)) c.assignedTo=c.assignedTo?[c.assignedTo]:[];
+  if(checked){ if(!c.assignedTo.includes(userId)) c.assignedTo.push(userId); }
+  else { c.assignedTo=c.assignedTo.filter(id=>id!==userId); }
 }
 
 function openAddUser(){
@@ -1316,7 +1327,7 @@ function deleteUser(userId){
   if(!confirm(lang==='tr'?'Bu kullanıcıyı silmek istediğinizden emin misiniz?':'Are you sure you want to delete this user?')) return;
   users=users.filter(u=>u.id!==userId);
   // Reassign clients from deleted user to admin
-  clients.forEach(c=>{ if(c.assignedTo===userId) c.assignedTo=currentUser.id; });
+  clients.forEach(c=>{ if((c.assignedTo||[]).includes(userId)) c.assignedTo=(c.assignedTo||[]).filter(id=>id!==userId); });
   renderSettings();
 }
 // ═══════════════════════════════════════════════════════
@@ -1329,12 +1340,4 @@ if(restoreSession()){
   renderCurrentView();
 } else {
   if(lang==='en'){
-    const s=document.getElementById('login-sub'); if(s) s.textContent='LEGAL MANAGEMENT PANEL';
-    const lb=document.getElementById('login-btn'); if(lb) lb.textContent='Sign In';
-    const le=document.getElementById('lbl-email'); if(le) le.textContent='EMAIL';
-    const lp=document.getElementById('lbl-pass'); if(lp) lp.textContent='PASSWORD';
-  }
-}
-</script>
-</body>
-</html>
+    const s=document.getElementBy
