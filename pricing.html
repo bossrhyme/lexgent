@@ -4,179 +4,183 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Lexis — Fiyatlandırma</title>
-<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;0,900;1,400&family=DM+Mono:wght@300;400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-:root{--bg:#0a0b0d;--surface:#111316;--surface2:#191c22;--border:#242830;--accent:#c9a84c;--accent2:#e8c97a;--text:#ede9e0;--muted:#6b6f7a;--danger:#e05555;--ok:#4caf82}
-body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;min-height:100vh}
-body::before{content:'';position:fixed;inset:0;z-index:1000;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");opacity:.4}
-nav{position:sticky;top:0;z-index:500;padding:0 48px;height:68px;display:flex;align-items:center;justify-content:space-between;background:rgba(10,11,13,.9);border-bottom:1px solid var(--border);backdrop-filter:blur(16px)}
-.nav-logo{font-family:'Playfair Display',serif;font-size:22px;color:var(--accent);letter-spacing:1.5px;font-weight:700;text-decoration:none}
-.nav-links{display:flex;gap:32px;align-items:center}
-.nav-links a{color:var(--muted);font-size:13px;text-decoration:none;letter-spacing:.5px;font-family:'DM Mono',monospace;transition:color .2s}
+:root{
+  --bg:#f4f5f7;--surface:#fff;--surface2:#f9fafb;--surface3:#f0f2f5;
+  --border:#e4e7ed;--border2:#d0d5de;
+  --text:#111827;--text2:#374151;--muted:#6b7280;--muted2:#9ca3af;
+  --accent:#1e3a5f;--accent2:#2952a3;--accent-light:#ebf0fa;--accent-mid:#c7d4f0;
+  --ok:#059669;--ok-light:#ecfdf5;--warn:#d97706;--danger:#dc2626;--danger-light:#fef2f2;
+  --shadow-sm:0 1px 3px rgba(0,0,0,.07);--shadow:0 4px 16px rgba(0,0,0,.08);--shadow-lg:0 16px 48px rgba(0,0,0,.1);
+}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif;min-height:100vh;font-size:14px;line-height:1.6}
+
+/* NAV */
+nav{position:sticky;top:0;z-index:500;padding:0 48px;height:64px;display:flex;align-items:center;justify-content:space-between;background:rgba(255,255,255,.96);border-bottom:1px solid var(--border);backdrop-filter:blur(12px);box-shadow:var(--shadow-sm)}
+.nav-logo{font-family:'Lora',serif;font-size:20px;color:var(--accent);letter-spacing:2px;font-weight:700;text-decoration:none}
+.nav-links{display:flex;gap:28px;align-items:center}
+.nav-links a{color:var(--muted);font-size:13px;text-decoration:none;font-family:'JetBrains Mono',monospace;transition:color .2s;letter-spacing:.3px}
 .nav-links a:hover{color:var(--text)}
 .nav-right{display:flex;gap:10px;align-items:center}
-.lang-toggle{display:flex;align-items:center;background:var(--surface2);border:1px solid var(--border);border-radius:20px;overflow:hidden}
-.lang-btn{padding:5px 13px;font-size:11px;font-family:'DM Mono',monospace;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .2s;letter-spacing:.5px}
-.lang-btn.active{background:var(--accent);color:#0a0b0d;font-weight:600}
-.btn{padding:9px 20px;border-radius:6px;border:none;cursor:pointer;font-size:13px;font-family:'DM Sans',sans-serif;font-weight:500;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
-.btn-ghost{background:transparent;border:1px solid var(--border);color:var(--muted)}
-.btn-ghost:hover{border-color:var(--accent);color:var(--accent)}
-.btn-primary{background:var(--accent);color:#0a0b0d;font-weight:600}
+.lang-toggle{display:flex;align-items:center;background:var(--surface3);border:1px solid var(--border);border-radius:20px;overflow:hidden}
+.lang-btn{padding:4px 12px;font-size:10px;font-family:'JetBrains Mono',monospace;cursor:pointer;border:none;background:transparent;color:var(--muted);transition:all .2s;letter-spacing:.5px}
+.lang-btn.active{background:var(--accent);color:#fff;font-weight:500}
+.btn{padding:8px 18px;border-radius:7px;border:none;cursor:pointer;font-size:12.5px;font-family:'Sora',sans-serif;font-weight:500;transition:all .2s;text-decoration:none;display:inline-flex;align-items:center;gap:6px}
+.btn-ghost{background:transparent;border:1.5px solid var(--border2);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--accent2);color:var(--accent2)}
+.btn-primary{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(30,58,95,.2)}
 .btn-primary:hover{background:var(--accent2);transform:translateY(-1px)}
-.btn-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
-.btn-outline:hover{border-color:var(--accent);color:var(--accent)}
-.btn-sm{padding:7px 14px;font-size:12px}
-/* Hero */
-.hero{padding:100px 48px 60px;text-align:center;position:relative;overflow:hidden}
-.hero-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);width:700px;height:350px;background:radial-gradient(ellipse,rgba(201,168,76,.08),transparent 70%);pointer-events:none}
-.hero-tag{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:2px;margin-bottom:20px}
-.hero-title{font-family:'Playfair Display',serif;font-size:clamp(36px,5vw,64px);font-weight:900;line-height:1.1;margin-bottom:20px;position:relative;z-index:1}
-.hero-title em{font-style:italic;color:var(--accent)}
-.hero-sub{font-size:16px;color:var(--muted);margin-bottom:40px;font-weight:300;position:relative;z-index:1}
-/* Billing toggle */
-.billing-toggle{display:inline-flex;align-items:center;gap:12px;background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:8px 16px;position:relative;z-index:1}
-.billing-toggle span{font-family:'DM Mono',monospace;font-size:12px;color:var(--muted);cursor:pointer;transition:color .2s;letter-spacing:.5px}
-.billing-toggle span.active{color:var(--text)}
-.toggle-switch{width:40px;height:22px;background:var(--border);border-radius:11px;cursor:pointer;position:relative;transition:background .2s}
-.toggle-switch.on{background:var(--accent)}
-.toggle-knob{position:absolute;top:3px;left:3px;width:16px;height:16px;background:#fff;border-radius:50%;transition:transform .2s}
+
+/* HERO */
+.hero{padding:80px 48px 52px;text-align:center;position:relative;overflow:hidden}
+.hero-bg{position:absolute;inset:0;background:linear-gradient(160deg,#eef2fa 0%,var(--bg) 60%)}
+.hero-glow{position:absolute;top:0;left:50%;transform:translateX(-50%);width:700px;height:400px;background:radial-gradient(ellipse,rgba(41,82,163,.07),transparent 65%);pointer-events:none}
+.hero-tag{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent2);letter-spacing:2.5px;margin-bottom:16px;position:relative;z-index:1;display:flex;align-items:center;justify-content:center;gap:8px}
+.hero-tag::before{content:'';width:20px;height:1.5px;background:var(--accent2)}
+.hero-title{font-family:'Lora',serif;font-size:clamp(32px,4.5vw,56px);font-weight:700;line-height:1.12;margin-bottom:16px;position:relative;z-index:1;color:var(--text)}
+.hero-title em{font-style:italic;color:var(--accent2)}
+.hero-sub{font-size:15px;color:var(--muted);margin-bottom:36px;font-weight:300;position:relative;z-index:1}
+
+/* BILLING TOGGLE */
+.billing-toggle{display:inline-flex;align-items:center;gap:12px;background:var(--surface);border:1.5px solid var(--border);border-radius:10px;padding:8px 16px;position:relative;z-index:1;box-shadow:var(--shadow-sm)}
+.billing-toggle span{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--muted2);cursor:pointer;transition:color .2s;letter-spacing:.5px}
+.billing-toggle span.active{color:var(--text);font-weight:500}
+.toggle-switch{width:38px;height:20px;background:var(--border2);border-radius:10px;cursor:pointer;position:relative;transition:background .2s}
+.toggle-switch.on{background:var(--accent2)}
+.toggle-knob{position:absolute;top:3px;left:3px;width:14px;height:14px;background:#fff;border-radius:50%;transition:transform .2s;box-shadow:0 1px 3px rgba(0,0,0,.2)}
 .toggle-switch.on .toggle-knob{transform:translateX(18px)}
-.save-badge{background:rgba(76,175,130,.15);color:var(--ok);border:1px solid rgba(76,175,130,.3);border-radius:10px;padding:2px 8px;font-size:10px;font-family:'DM Mono',monospace}
-/* Plans */
-.plans-section{padding:40px 48px 80px;max-width:1160px;margin:0 auto}
-.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:20px}
-.plan-card{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:36px;position:relative;transition:all .2s;display:flex;flex-direction:column}
-.plan-card:hover{border-color:rgba(201,168,76,.3);transform:translateY(-2px);box-shadow:0 20px 60px rgba(0,0,0,.4)}
-.plan-card.featured{border-color:var(--accent);background:linear-gradient(160deg,rgba(201,168,76,.06),var(--surface) 60%);box-shadow:0 0 60px rgba(201,168,76,.1)}
-.plan-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--accent);color:#0a0b0d;padding:4px 16px;border-radius:20px;font-size:10px;font-family:'DM Mono',monospace;font-weight:700;letter-spacing:1px;white-space:nowrap}
-.plan-name{font-family:'DM Mono',monospace;font-size:11px;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:12px}
-.plan-price{display:flex;align-items:baseline;gap:4px;margin-bottom:8px}
-.price-amount{font-family:'Playfair Display',serif;font-size:52px;font-weight:900;line-height:1}
-.price-currency{font-size:20px;font-weight:600;color:var(--muted);margin-bottom:4px}
-.price-period{font-size:13px;color:var(--muted);font-family:'DM Mono',monospace}
-.plan-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:28px;font-weight:300;flex:0}
-.plan-divider{height:1px;background:var(--border);margin-bottom:24px}
-.plan-features{flex:1;display:flex;flex-direction:column;gap:10px;margin-bottom:32px}
-.feat-row{display:flex;align-items:center;gap:10px;font-size:13px}
-.feat-row .check{color:var(--ok);font-size:14px;flex-shrink:0;width:16px}
-.feat-row .cross{color:var(--border);font-size:14px;flex-shrink:0;width:16px}
-.feat-row span{color:var(--muted)}
-.feat-row .feat-val{color:var(--accent);font-family:'DM Mono',monospace;font-size:11px}
-.plan-cta{width:100%;padding:13px;border-radius:8px;font-size:14px;font-family:'DM Sans',sans-serif;font-weight:600;cursor:pointer;transition:all .2s;border:none;letter-spacing:.3px}
-.cta-primary{background:var(--accent);color:#0a0b0d}
-.cta-primary:hover{background:var(--accent2)}
-.cta-outline{background:transparent;border:1px solid var(--border);color:var(--text)}
-.cta-outline:hover{border-color:var(--accent);color:var(--accent)}
-/* Compare */
-.compare-section{padding:0 48px 60px;max-width:1160px;margin:0 auto}
-.compare-toggle{text-align:center;margin-bottom:32px}
-.compare-toggle a{color:var(--accent);font-size:13px;text-decoration:none;font-family:'DM Mono',monospace;letter-spacing:.5px;cursor:pointer;transition:opacity .2s}
+.save-badge{background:var(--ok-light);color:var(--ok);border:1px solid #a7f3d0;border-radius:8px;padding:2px 8px;font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:600}
+
+/* PLANS */
+.plans-section{padding:40px 48px 72px;max-width:1160px;margin:0 auto}
+.plans-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;align-items:start}
+.plan-card{background:var(--surface);border:1.5px solid var(--border);border-radius:14px;padding:32px;position:relative;transition:all .2s;display:flex;flex-direction:column;box-shadow:var(--shadow-sm)}
+.plan-card:hover{border-color:var(--accent-mid);transform:translateY(-3px);box-shadow:var(--shadow)}
+.plan-card.featured{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(41,82,163,.08),var(--shadow)}
+.plan-pop-badge{position:absolute;top:-12px;left:50%;transform:translateX(-50%);background:var(--accent2);color:#fff;padding:3px 14px;border-radius:20px;font-size:9px;font-family:'JetBrains Mono',monospace;font-weight:700;letter-spacing:1px;white-space:nowrap}
+.plan-name{font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--accent2);letter-spacing:2.5px;text-transform:uppercase;margin-bottom:10px;font-weight:500}
+.plan-price{display:flex;align-items:baseline;gap:3px;margin-bottom:7px}
+.price-amount{font-family:'Lora',serif;font-size:48px;font-weight:700;line-height:1;color:var(--text)}
+.price-currency{font-size:18px;font-weight:500;color:var(--muted);margin-bottom:3px}
+.price-period{font-size:12px;color:var(--muted2);font-family:'JetBrains Mono',monospace;margin-left:2px}
+.plan-desc{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:24px;font-weight:300}
+.plan-divider{height:1px;background:var(--border);margin-bottom:20px}
+.plan-features{flex:1;display:flex;flex-direction:column;gap:9px;margin-bottom:28px}
+.feat-row{display:flex;align-items:flex-start;gap:9px;font-size:13px}
+.feat-row .check{color:var(--ok);font-size:13px;flex-shrink:0;width:15px;margin-top:1px}
+.feat-row .cross{color:var(--muted2);font-size:13px;flex-shrink:0;width:15px;margin-top:1px}
+.feat-row span{color:var(--text2)}
+.feat-row .feat-val{color:var(--accent2);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500}
+.plan-cta{width:100%;padding:12px;border-radius:8px;font-size:13.5px;font-family:'Sora',sans-serif;font-weight:600;cursor:pointer;transition:all .2s;border:none;letter-spacing:.2px}
+.cta-primary{background:var(--accent);color:#fff;box-shadow:0 2px 8px rgba(30,58,95,.2)}
+.cta-primary:hover{background:var(--accent2);box-shadow:0 6px 20px rgba(30,58,95,.2);transform:translateY(-1px)}
+.cta-outline{background:transparent;border:1.5px solid var(--border2);color:var(--text2)}
+.cta-outline:hover{border-color:var(--accent2);color:var(--accent2);background:var(--accent-light)}
+
+/* COMPARE */
+.compare-section{padding:0 48px 52px;max-width:1160px;margin:0 auto}
+.compare-toggle{text-align:center;margin-bottom:24px}
+.compare-toggle a{color:var(--accent2);font-size:12.5px;text-decoration:none;font-family:'JetBrains Mono',monospace;letter-spacing:.5px;cursor:pointer;transition:opacity .2s;display:inline-flex;align-items:center;gap:6px}
 .compare-toggle a:hover{opacity:.7}
-.compare-table{display:none;border:1px solid var(--border);border-radius:10px;overflow:hidden}
+.compare-table{display:none;border:1.5px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow-sm)}
 .compare-table.show{display:block}
-.ct-header{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;background:var(--surface);border-bottom:1px solid var(--border)}
-.ct-col{padding:14px 20px;font-family:'DM Mono',monospace;font-size:11px;color:var(--muted);text-align:center;letter-spacing:.5px;text-transform:uppercase}
+.ct-header{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;background:var(--surface2);border-bottom:1px solid var(--border)}
+.ct-col{padding:13px 18px;font-family:'JetBrains Mono',monospace;font-size:10px;color:var(--muted);text-align:center;letter-spacing:.5px;text-transform:uppercase}
 .ct-col:first-child{text-align:left}
-.ct-section{background:var(--surface2);padding:10px 20px;font-family:'DM Mono',monospace;font-size:10px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;border-bottom:1px solid var(--border)}
-.ct-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;border-bottom:1px solid var(--border);transition:background .15s}
+.ct-col.featured-col{color:var(--accent2);font-weight:600}
+.ct-section{background:var(--surface3);padding:9px 18px;font-family:'JetBrains Mono',monospace;font-size:9px;color:var(--muted2);letter-spacing:1.5px;text-transform:uppercase;border-bottom:1px solid var(--border)}
+.ct-row{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;border-bottom:1px solid var(--border);background:var(--surface)}
 .ct-row:last-child{border:none}
-.ct-row:hover{background:rgba(201,168,76,.02)}
-.ct-cell{padding:13px 20px;font-size:13px;text-align:center;display:flex;align-items:center;justify-content:center}
-.ct-cell:first-child{text-align:left;justify-content:flex-start;font-size:13px;color:var(--muted)}
-.ct-check{color:var(--ok)}.ct-cross{color:var(--border);font-size:16px}
-.ct-val{color:var(--accent);font-family:'DM Mono',monospace;font-size:11px}
+.ct-row:hover{background:var(--surface2)}
+.ct-cell{padding:12px 18px;font-size:12.5px;text-align:center;display:flex;align-items:center;justify-content:center}
+.ct-cell:first-child{text-align:left;justify-content:flex-start;font-size:12.5px;color:var(--text2)}
+.ct-check{color:var(--ok);font-size:15px}
+.ct-cross{color:var(--border2);font-size:17px;font-weight:300}
+.ct-val{color:var(--accent2);font-family:'JetBrains Mono',monospace;font-size:11px;font-weight:500}
+
+/* TRUST */
+.trust-strip{padding:28px 48px;border-top:1.5px solid var(--border);border-bottom:1.5px solid var(--border);background:var(--surface);display:flex;justify-content:center;align-items:center;gap:40px;flex-wrap:wrap}
+.trust-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);font-family:'JetBrains Mono',monospace;letter-spacing:.3px}
+.trust-icon{font-size:16px}
+
 /* FAQ */
-.faq-section{padding:40px 48px 80px;max-width:800px;margin:0 auto}
-.faq-title{font-family:'Playfair Display',serif;font-size:32px;font-weight:700;text-align:center;margin-bottom:40px}
+.faq-section{padding:52px 48px 80px;max-width:760px;margin:0 auto}
+.faq-title{font-family:'Lora',serif;font-size:30px;font-weight:700;text-align:center;margin-bottom:36px;color:var(--text)}
 .faq-item{border-bottom:1px solid var(--border);overflow:hidden}
-.faq-q{display:flex;align-items:center;justify-content:space-between;padding:20px 0;cursor:pointer;font-size:15px;font-weight:500;transition:color .2s}
-.faq-q:hover{color:var(--accent)}
-.faq-arrow{font-size:18px;color:var(--muted);transition:transform .25s;flex-shrink:0}
+.faq-q{display:flex;align-items:center;justify-content:space-between;padding:18px 0;cursor:pointer;font-size:14.5px;font-weight:500;transition:color .2s;color:var(--text)}
+.faq-q:hover{color:var(--accent2)}
+.faq-arrow{font-size:18px;color:var(--muted2);transition:transform .25s;flex-shrink:0}
 .faq-item.open .faq-arrow{transform:rotate(180deg)}
-.faq-a{font-size:14px;color:var(--muted);line-height:1.7;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;font-weight:300}
-.faq-item.open .faq-a{max-height:200px;padding-bottom:20px}
-/* Trust */
-.trust-strip{padding:32px 48px;border-top:1px solid var(--border);border-bottom:1px solid var(--border);background:var(--surface);display:flex;justify-content:center;align-items:center;gap:48px;flex-wrap:wrap}
-.trust-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.3px}
-.trust-icon{font-size:18px}
+.faq-a{font-size:13.5px;color:var(--muted);line-height:1.75;max-height:0;overflow:hidden;transition:max-height .3s ease,padding .3s;font-weight:300}
+.faq-item.open .faq-a{max-height:200px;padding-bottom:18px}
+
 /* MODAL */
-.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,.75);z-index:900;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .25s;backdrop-filter:blur(6px)}
+.modal-overlay{position:fixed;inset:0;background:rgba(17,24,39,.5);z-index:900;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity .2s;backdrop-filter:blur(5px)}
 .modal-overlay.show{opacity:1;pointer-events:all}
-.modal-box{background:var(--surface);border:1px solid var(--border);border-radius:14px;width:560px;max-height:90vh;overflow-y:auto;display:flex;flex-direction:column;animation:slideUp .3s ease;position:relative}
-@keyframes slideUp{from{transform:translateY(30px);opacity:0}to{transform:translateY(0);opacity:1}}
-.modal-box::-webkit-scrollbar{width:4px}
-.modal-box::-webkit-scrollbar-thumb{background:var(--border);border-radius:2px}
-.modal-header{padding:28px 32px 20px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.modal-header h2{font-family:'Playfair Display',serif;font-size:22px;font-weight:700}
-.modal-close{background:none;border:none;color:var(--muted);font-size:22px;cursor:pointer;line-height:1;transition:color .2s;padding:4px}
-.modal-close:hover{color:var(--text)}
-.modal-body{padding:28px 32px;flex:1}
-/* Step indicator */
-.step-indicator{display:flex;align-items:center;gap:0;margin-bottom:32px}
-.si-step{display:flex;flex-direction:column;align-items:center;flex:1;gap:6px}
-.si-circle{width:32px;height:32px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:12px;font-family:'DM Mono',monospace;color:var(--muted);transition:all .25s;background:var(--bg)}
+.modal-box{background:var(--surface);border:1.5px solid var(--border);border-radius:16px;width:520px;max-height:88vh;overflow-y:auto;display:flex;flex-direction:column;animation:slideUp .25s ease;position:relative;box-shadow:var(--shadow-lg)}
+@keyframes slideUp{from{transform:translateY(24px);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-box::-webkit-scrollbar{width:4px}.modal-box::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+.modal-header{padding:24px 28px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.modal-header h2{font-family:'Lora',serif;font-size:20px;font-weight:700;color:var(--text)}
+.modal-close{background:none;border:1px solid var(--border);color:var(--muted);font-size:18px;cursor:pointer;line-height:1;padding:4px 8px;border-radius:6px;transition:all .2s}
+.modal-close:hover{background:var(--surface3);color:var(--text)}
+.modal-body{padding:24px 28px;flex:1}
+.step-indicator{display:flex;align-items:center;gap:0;margin-bottom:28px}
+.si-step{display:flex;flex-direction:column;align-items:center;flex:1;gap:5px}
+.si-circle{width:30px;height:30px;border-radius:50%;border:2px solid var(--border);display:flex;align-items:center;justify-content:center;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--muted);transition:all .25s;background:var(--bg)}
 .si-step.done .si-circle{background:var(--ok);border-color:var(--ok);color:#fff}
-.si-step.active .si-circle{background:var(--accent);border-color:var(--accent);color:#0a0b0d;font-weight:700}
-.si-label{font-size:10px;color:var(--muted);font-family:'DM Mono',monospace;letter-spacing:.5px;text-align:center}
-.si-step.active .si-label{color:var(--accent)}
-.si-line{flex:1;height:1px;background:var(--border);margin-top:-20px;z-index:-1}
+.si-step.active .si-circle{background:var(--accent2);border-color:var(--accent2);color:#fff;font-weight:700}
+.si-label{font-size:9px;color:var(--muted);font-family:'JetBrains Mono',monospace;letter-spacing:.5px;text-align:center;text-transform:uppercase}
+.si-step.active .si-label{color:var(--accent2)}
+.si-line{flex:1;height:1px;background:var(--border);margin-top:-18px;z-index:-1}
 .si-line.done{background:var(--ok)}
-/* Form fields */
-.field{margin-bottom:18px}
-.field label{display:block;font-size:11px;font-family:'DM Mono',monospace;color:var(--muted);letter-spacing:.5px;margin-bottom:8px}
-.field input,.field select{width:100%;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:11px 14px;color:var(--text);font-size:14px;font-family:'DM Sans',sans-serif;outline:none;transition:border .2s,box-shadow .2s}
-.field input:focus,.field select:focus{border-color:var(--accent);box-shadow:0 0 0 3px rgba(201,168,76,.1)}
-.field input::placeholder{color:var(--muted)}
-.field select option{background:var(--surface2)}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.field-error{font-size:11px;color:var(--danger);margin-top:5px;display:none}
-.field-error.show{display:block}
-/* Order summary */
-.order-summary{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:18px;margin-bottom:22px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:10px;font-family:'JetBrains Mono',monospace;color:var(--muted);letter-spacing:.7px;margin-bottom:6px;text-transform:uppercase}
+.field input,.field select{width:100%;background:var(--surface2);border:1.5px solid var(--border);border-radius:7px;padding:9px 13px;color:var(--text);font-size:13.5px;font-family:'Sora',sans-serif;outline:none;transition:border .2s,box-shadow .2s}
+.field input:focus,.field select:focus{border-color:var(--accent2);box-shadow:0 0 0 3px rgba(41,82,163,.08);background:var(--surface)}
+.field input::placeholder{color:var(--muted2)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.order-summary{background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;padding:16px;margin-bottom:20px}
 .os-plan{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
-.os-plan-name{font-family:'Playfair Display',serif;font-size:16px;font-weight:700}
-.os-plan-per{font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:2px}
-.os-rows{display:flex;flex-direction:column;gap:7px;border-top:1px solid var(--border);padding-top:10px;margin-top:10px}
-.os-row{display:flex;justify-content:space-between;font-size:12px;color:var(--muted);font-family:'DM Mono',monospace}
-.os-row.total{color:var(--text);font-weight:700;font-size:14px;border-top:1px solid var(--border);padding-top:8px;margin-top:4px}
-.os-trial{font-size:11px;color:var(--ok);margin-top:6px;font-family:'DM Mono',monospace}
-/* Promo */
-.promo-row{display:flex;gap:8px;margin-bottom:18px}
-.promo-row input{flex:1;background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 14px;color:var(--text);font-size:13px;font-family:'DM Mono',monospace;outline:none;transition:border .2s}
-.promo-row input:focus{border-color:var(--accent)}
-.promo-row input::placeholder{color:var(--muted)}
-.promo-row button{padding:10px 16px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;color:var(--text);font-size:12px;font-family:'DM Mono',monospace;cursor:pointer;white-space:nowrap;transition:all .2s}
-.promo-row button:hover{border-color:var(--accent);color:var(--accent)}
-.promo-msg{font-size:11px;font-family:'DM Mono',monospace;margin-top:-12px;margin-bottom:14px;padding:6px 10px;border-radius:5px;display:none}
-.promo-msg.ok{display:block;background:rgba(76,175,130,.1);color:var(--ok);border:1px solid rgba(76,175,130,.2)}
-.promo-msg.err{display:block;background:rgba(224,85,85,.1);color:var(--danger);border:1px solid rgba(224,85,85,.2)}
-/* Card format */
-.card-icons{display:flex;gap:8px;margin-bottom:14px;align-items:center}
-.card-icon{background:var(--surface2);border:1px solid var(--border);border-radius:5px;padding:5px 9px;font-size:12px;font-family:'DM Mono',monospace;color:var(--muted)}
-/* Submit button */
-.pay-btn{width:100%;padding:14px;background:var(--accent);color:#0a0b0d;border:none;border-radius:8px;font-size:15px;font-family:'DM Sans',sans-serif;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px}
-.pay-btn:hover{background:var(--accent2)}
+.os-plan-name{font-family:'Lora',serif;font-size:15px;font-weight:700;color:var(--text)}
+.os-plan-per{font-size:11px;color:var(--muted);font-family:'JetBrains Mono',monospace;margin-top:2px}
+.os-rows{display:flex;flex-direction:column;gap:6px;border-top:1px solid var(--border);padding-top:9px;margin-top:9px}
+.os-row{display:flex;justify-content:space-between;font-size:11.5px;color:var(--muted);font-family:'JetBrains Mono',monospace}
+.os-row.total{color:var(--text);font-weight:700;font-size:13px;border-top:1px solid var(--border);padding-top:7px;margin-top:3px}
+.os-trial{font-size:10px;color:var(--ok);margin-top:6px;font-family:'JetBrains Mono',monospace}
+.promo-row{display:flex;gap:7px;margin-bottom:14px}
+.promo-row input{flex:1;background:var(--surface2);border:1.5px solid var(--border);border-radius:7px;padding:9px 12px;color:var(--text);font-size:12.5px;font-family:'JetBrains Mono',monospace;outline:none;transition:border .2s}
+.promo-row input:focus{border-color:var(--accent2)}
+.promo-row input::placeholder{color:var(--muted2)}
+.promo-row button{padding:9px 14px;background:var(--surface3);border:1.5px solid var(--border);border-radius:7px;color:var(--text2);font-size:12px;font-family:'JetBrains Mono',monospace;cursor:pointer;white-space:nowrap;transition:all .2s}
+.promo-row button:hover{border-color:var(--accent2);color:var(--accent2)}
+.promo-msg{font-size:11px;font-family:'JetBrains Mono',monospace;margin-top:-8px;margin-bottom:12px;padding:5px 10px;border-radius:5px;display:none}
+.promo-msg.ok{display:block;background:var(--ok-light);color:var(--ok);border:1px solid #a7f3d0}
+.promo-msg.err{display:block;background:var(--danger-light);color:var(--danger);border:1px solid #fecaca}
+.card-icons{display:flex;gap:6px;margin-bottom:12px;align-items:center}
+.card-icon{background:var(--surface3);border:1px solid var(--border);border-radius:5px;padding:4px 8px;font-size:11px;font-family:'JetBrains Mono',monospace;color:var(--muted);font-weight:600}
+.pay-btn{width:100%;padding:13px;background:var(--accent);color:#fff;border:none;border-radius:8px;font-size:14px;font-family:'Sora',sans-serif;font-weight:700;cursor:pointer;transition:all .2s;display:flex;align-items:center;justify-content:center;gap:8px;margin-top:8px;box-shadow:0 2px 8px rgba(30,58,95,.2)}
+.pay-btn:hover{background:var(--accent2);transform:translateY(-1px)}
 .pay-btn:disabled{opacity:.6;cursor:not-allowed}
-.sec-note{text-align:center;font-size:11px;color:var(--muted);font-family:'DM Mono',monospace;margin-top:10px;letter-spacing:.3px}
-.modal-back{background:none;border:1px solid var(--border);border-radius:6px;padding:7px 14px;color:var(--muted);font-size:12px;font-family:'DM Mono',monospace;cursor:pointer;transition:all .2s;margin-bottom:20px}
-.modal-back:hover{border-color:var(--accent);color:var(--accent)}
-/* Success */
-.success-screen{text-align:center;padding:20px 0}
-.success-icon{font-size:56px;display:block;margin-bottom:20px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
+.sec-note{text-align:center;font-size:10px;color:var(--muted2);font-family:'JetBrains Mono',monospace;margin-top:9px;letter-spacing:.3px}
+.modal-back{background:none;border:1.5px solid var(--border);border-radius:7px;padding:6px 14px;color:var(--muted);font-size:11.5px;font-family:'JetBrains Mono',monospace;cursor:pointer;transition:all .2s;margin-bottom:18px}
+.modal-back:hover{border-color:var(--accent2);color:var(--accent2)}
+.success-screen{text-align:center;padding:16px 0}
+.success-icon{font-size:52px;display:block;margin-bottom:18px;animation:popIn .4s cubic-bezier(.34,1.56,.64,1)}
 @keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
-.success-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;margin-bottom:10px}
-.success-sub{font-size:14px;color:var(--muted);margin-bottom:28px;line-height:1.6}
-.success-details{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:18px;text-align:left;display:flex;flex-direction:column;gap:8px;margin-bottom:24px}
-.sd-row{display:flex;justify-content:space-between;font-size:12px;font-family:'DM Mono',monospace}
-.sd-row span:first-child{color:var(--muted)}
-.sd-row span:last-child{color:var(--text);font-weight:500}
-.spinner{width:18px;height:18px;border:2px solid rgba(0,0,0,.2);border-top-color:#000;border-radius:50%;animation:spin .6s linear infinite}
+.success-title{font-family:'Lora',serif;font-size:26px;font-weight:700;margin-bottom:9px;color:var(--text)}
+.success-sub{font-size:13.5px;color:var(--muted);margin-bottom:24px;line-height:1.65}
+.success-details{background:var(--surface2);border:1.5px solid var(--border);border-radius:9px;padding:16px;text-align:left;display:flex;flex-direction:column;gap:7px;margin-bottom:22px}
+.sd-row{display:flex;justify-content:space-between;font-size:12px;font-family:'JetBrains Mono',monospace}
+.sd-row span:first-child{color:var(--muted)}.sd-row span:last-child{color:var(--text);font-weight:600}
+.spinner{width:17px;height:17px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .spinner-w{display:inline-flex;align-items:center;gap:8px}
-/* Responsive */
-@media(max-width:900px){.plans-grid{grid-template-columns:1fr}.ct-header,.ct-row{grid-template-columns:2fr 1fr 1fr 1fr;font-size:11px}.trust-strip{gap:24px}}
-@media(max-width:640px){nav{padding:0 16px}.nav-links{display:none}.hero{padding:80px 20px 40px}.plans-section,.compare-section,.faq-section{padding-left:20px;padding-right:20px}.modal-box{width:calc(100vw - 32px)}.modal-header,.modal-body{padding:20px}.trust-strip{flex-direction:column;gap:16px}}
+@media(max-width:900px){.plans-grid{grid-template-columns:1fr;max-width:440px;margin:0 auto}}
+@media(max-width:640px){nav{padding:0 16px}.nav-links{display:none}.hero{padding:60px 20px 36px}.plans-section,.compare-section,.faq-section{padding-left:20px;padding-right:20px}.modal-box{width:calc(100vw - 24px)}.modal-header,.modal-body{padding:18px}.trust-strip{gap:20px;padding:20px}}
 </style>
 </head>
 <body>
@@ -184,162 +188,144 @@ nav{position:sticky;top:0;z-index:500;padding:0 48px;height:68px;display:flex;al
 <nav>
   <a href="index.html" class="nav-logo">LEXIS</a>
   <div class="nav-links">
-    <a href="index.html#features" data-i18n="nav_features"></a>
-    <a href="index.html#how" data-i18n="nav_how"></a>
-    <a href="pricing.html" data-i18n="nav_pricing"></a>
+    <a href="index.html#features" data-i18n="nav_features">Özellikler</a>
+    <a href="index.html#how" data-i18n="nav_how">Nasıl Çalışır</a>
+    <a href="pricing.html" data-i18n="nav_pricing">Fiyatlandırma</a>
   </div>
   <div class="nav-right">
     <div class="lang-toggle">
       <button class="lang-btn active" id="btn-tr" onclick="setLang('tr')">TR</button>
       <button class="lang-btn" id="btn-en" onclick="setLang('en')">EN</button>
     </div>
-    <a href="login.html" class="btn btn-ghost" data-i18n="nav_signin"></a>
-    <a href="login.html" class="btn btn-primary" data-i18n="nav_getstarted"></a>
+    <a href="login.html" class="btn btn-ghost" data-i18n="nav_signin">Giriş Yap</a>
+    <a href="login.html" class="btn btn-primary" data-i18n="nav_getstarted">Başlayın →</a>
   </div>
 </nav>
 
-<!-- Hero -->
+<!-- HERO -->
 <section class="hero">
+  <div class="hero-bg"></div>
   <div class="hero-glow"></div>
-  <div class="hero-tag" data-i18n="price_tag"></div>
-  <h1 class="hero-title"><span data-i18n="price_h1"></span><br><em data-i18n="price_h2"></em></h1>
-  <p class="hero-sub" data-i18n="price_sub"></p>
+  <div class="hero-tag" data-i18n="price_tag">✦ ŞEFFAF FİYATLANDIRMA</div>
+  <h1 class="hero-title"><span data-i18n="price_h1">Her büro için</span> <em data-i18n="price_h2">sade planlar</em></h1>
+  <p class="hero-sub" data-i18n="price_sub">14 günlük ücretsiz deneme. Kredi kartı gerekmez. Uzun vadeli taahhüt yok.</p>
   <div class="billing-toggle">
-    <span id="lbl-monthly" class="active" onclick="setBilling('monthly')" data-i18n="billing_monthly"></span>
+    <span id="lbl-monthly" class="active" onclick="setBilling('monthly')" data-i18n="billing_monthly">Aylık</span>
     <div class="toggle-switch" id="billing-switch" onclick="toggleBilling()"><div class="toggle-knob"></div></div>
-    <span id="lbl-annual" onclick="setBilling('annual')" data-i18n="billing_annual"></span>
-    <span class="save-badge" data-i18n="save_badge"></span>
+    <span id="lbl-annual" onclick="setBilling('annual')" data-i18n="billing_annual">Yıllık</span>
+    <span class="save-badge" data-i18n="save_badge">%25'e kadar tasarruf</span>
   </div>
 </section>
 
-<!-- Plans -->
+<!-- PLANS -->
 <div class="plans-section">
   <div class="plans-grid">
     <!-- Solo -->
     <div class="plan-card">
       <div class="plan-name">Solo</div>
-      <div class="plan-price">
-        <span class="price-currency">$</span>
-        <span class="price-amount">0</span>
-        <span class="price-period" data-i18n="per_month"></span>
-      </div>
-      <p class="plan-desc" data-i18n="solo_desc"></p>
+      <div class="plan-price"><span class="price-currency">$</span><span class="price-amount">0</span><span class="price-period" data-i18n="per_month">/ ay</span></div>
+      <p class="plan-desc" data-i18n="solo_desc">Bireysel avukatlar ve küçük bürolar için idealdir.</p>
       <div class="plan-divider"></div>
       <div class="plan-features">
-        <div class="feat-row"><span class="check">✓</span><span><span class="feat-val" data-i18n="solo_clients"></span> <span data-i18n="feat_clients"></span></span></div>
-        <div class="feat-row"><span class="check">✓</span><span><span class="feat-val" data-i18n="solo_cases"></span> <span data-i18n="feat_cases"></span></span></div>
-        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_basic_warn"></span></div>
-        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_timeline"></span></div>
-        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_file_upload"></span></div>
-        <div class="feat-row"><span class="cross">✕</span><span data-i18n="feat_subcases"></span></div>
-        <div class="feat-row"><span class="cross">✕</span><span data-i18n="feat_priority"></span></div>
-        <div class="feat-row"><span class="cross">✕</span><span data-i18n="feat_team"></span></div>
+        <div class="feat-row"><span class="check">✓</span><span><span class="feat-val" data-i18n="solo_clients">5'e kadar</span> <span data-i18n="feat_clients">müvekkil</span></span></div>
+        <div class="feat-row"><span class="check">✓</span><span><span class="feat-val" data-i18n="solo_cases">10'a kadar</span> <span data-i18n="feat_cases">dava</span></span></div>
+        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_basic_warn">Temel uyarı sistemi</span></div>
+        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_timeline">Aktivite zaman çizelgesi</span></div>
+        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_file_upload">Dosya yükleme</span></div>
+        <div class="feat-row"><span class="cross">—</span><span data-i18n="feat_subcases">Alt dava hiyerarşisi</span></div>
+        <div class="feat-row"><span class="cross">—</span><span data-i18n="feat_priority">Öncelikli destek</span></div>
+        <div class="feat-row"><span class="cross">—</span><span data-i18n="feat_team">Takım üyeleri</span></div>
       </div>
-      <button class="plan-cta cta-outline" onclick="openPayment('Solo',0)" data-i18n="solo_cta"></button>
+      <button class="plan-cta cta-outline" onclick="openPayment('Solo',0)" data-i18n="solo_cta">Ücretsiz Başla</button>
     </div>
-    <!-- Pro -->
+    <!-- Pro (featured) -->
     <div class="plan-card featured">
-      <div class="plan-badge" data-i18n="most_popular"></div>
+      <div class="plan-pop-badge" data-i18n="most_popular">EN POPÜLER</div>
       <div class="plan-name">Pro</div>
-      <div class="plan-price">
-        <span class="price-currency">$</span>
-        <span class="price-amount" id="pro-price">49</span>
-        <span class="price-period" data-i18n="per_month"></span>
-      </div>
-      <p class="plan-desc" data-i18n="pro_desc"></p>
+      <div class="plan-price"><span class="price-currency">$</span><span class="price-amount" id="pro-price">49</span><span class="price-period" data-i18n="per_month">/ ay</span></div>
+      <p class="plan-desc" data-i18n="pro_desc">Büyüyen ve birden fazla aktif dava olan bürolar için.</p>
       <div class="plan-divider"></div>
       <div class="plan-features">
-        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_unlimited_clients"></span></div>
-        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_unlimited_cases"></span></div>
-        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_full_warn"></span></div>
-        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_subcases"></span></div>
-        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_file_upload"></span></div>
-        <div class="feat-row"><span class="check">✓</span><span><span class="feat-val" data-i18n="pro_team"></span> <span data-i18n="feat_team_members"></span></span></div>
-        <div class="feat-row"><span class="cross">✕</span><span data-i18n="feat_api"></span></div>
-        <div class="feat-row"><span class="cross">✕</span><span data-i18n="feat_priority"></span></div>
+        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_unlimited_clients">Sınırsız müvekkil</span></div>
+        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_unlimited_cases">Sınırsız dava</span></div>
+        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_full_warn">Tam uyarı sistemi</span></div>
+        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_timeline">Aktivite zaman çizelgesi</span></div>
+        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_subcases">Alt dava hiyerarşisi</span></div>
+        <div class="feat-row"><span class="check">✓</span><span><span class="feat-val" data-i18n="pro_team">3'e kadar</span> <span data-i18n="feat_team_members">takım üyesi</span></span></div>
+        <div class="feat-row"><span class="cross">—</span><span data-i18n="feat_api">API erişimi</span></div>
+        <div class="feat-row"><span class="cross">—</span><span data-i18n="feat_account_mgr">Özel hesap yöneticisi</span></div>
       </div>
-      <button class="plan-cta cta-primary" onclick="openPayment('Pro', billingMode==='monthly'?49:37)" data-i18n="pro_cta"></button>
+      <button class="plan-cta cta-primary" onclick="openPayment('Pro',49)" data-i18n="pro_cta">14 Günlük Denemeyi Başlat</button>
     </div>
     <!-- Firm -->
     <div class="plan-card">
       <div class="plan-name">Firm</div>
-      <div class="plan-price">
-        <span class="price-currency">$</span>
-        <span class="price-amount" id="firm-price">129</span>
-        <span class="price-period" data-i18n="per_month"></span>
-      </div>
-      <p class="plan-desc" data-i18n="firm_desc"></p>
+      <div class="plan-price"><span class="price-currency">$</span><span class="price-amount" id="firm-price">129</span><span class="price-period" data-i18n="per_month">/ ay</span></div>
+      <p class="plan-desc" data-i18n="firm_desc">Ekip işbirliği ve gelişmiş araçlara ihtiyaç duyan bürolar için.</p>
       <div class="plan-divider"></div>
       <div class="plan-features">
-        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_everything_pro"></span></div>
-        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_unlimited_team"></span></div>
-        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_roles"></span></div>
-        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_api"></span></div>
-        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_priority"></span></div>
-        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_integrations"></span></div>
-        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_account_mgr"></span></div>
-        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_file_upload"></span></div>
+        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_everything_pro">Pro'daki her şey</span></div>
+        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_unlimited_team">Sınırsız takım üyeleri</span></div>
+        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_roles">Rol ve izin yönetimi</span></div>
+        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_integrations">Özel entegrasyonlar</span></div>
+        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_api">API erişimi</span></div>
+        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_priority">Öncelikli destek</span></div>
+        <div class="feat-row"><span class="check">✓</span><span data-i18n="feat_account_mgr">Özel hesap yöneticisi</span></div>
       </div>
-      <button class="plan-cta cta-outline" onclick="openPayment('Firm', billingMode==='monthly'?129:97)" data-i18n="firm_cta"></button>
+      <button class="plan-cta cta-primary" onclick="openPayment('Firm',129)" data-i18n="firm_cta">14 Günlük Denemeyi Başlat</button>
     </div>
   </div>
 </div>
 
-<!-- Compare -->
+<!-- COMPARE -->
 <div class="compare-section">
-  <div class="compare-toggle">
-    <a onclick="toggleCompare()" id="compare-link" data-i18n="compare_show"></a>
-  </div>
+  <div class="compare-toggle"><a onclick="toggleCompare()" id="compare-link" data-i18n="compare_show">↓ Tüm özellikleri karşılaştır</a></div>
   <div class="compare-table" id="compare-table">
     <div class="ct-header">
-      <div class="ct-col" data-i18n="ct_feature"></div>
+      <div class="ct-col" data-i18n="ct_feature">Özellik</div>
       <div class="ct-col">Solo</div>
-      <div class="ct-col">Pro</div>
+      <div class="ct-col featured-col">Pro</div>
       <div class="ct-col">Firm</div>
     </div>
-    <!-- Client & Case -->
-    <div class="ct-section" data-i18n="ct_sec1"></div>
-    <div class="ct-row"><div class="ct-cell" data-i18n="ct_clients"></div><div class="ct-cell"><span class="ct-val" data-i18n="ct_solo_clients"></span></div><div class="ct-cell"><span class="ct-check">✓</span></div><div class="ct-cell"><span class="ct-check">✓</span></div></div>
-    <div class="ct-row"><div class="ct-cell" data-i18n="ct_cases"></div><div class="ct-cell"><span class="ct-val" data-i18n="ct_solo_cases"></span></div><div class="ct-cell"><span class="ct-check">✓</span></div><div class="ct-cell"><span class="ct-check">✓</span></div></div>
-    <div class="ct-row"><div class="ct-cell" data-i18n="ct_subcases"></div><div class="ct-cell"><span class="ct-cross">—</span></div><div class="ct-cell"><span class="ct-check">✓</span></div><div class="ct-cell"><span class="ct-check">✓</span></div></div>
-    <div class="ct-row"><div class="ct-cell" data-i18n="ct_timeline"></div><div class="ct-cell"><span class="ct-check">✓</span></div><div class="ct-cell"><span class="ct-check">✓</span></div><div class="ct-cell"><span class="ct-check">✓</span></div></div>
-    <div class="ct-row"><div class="ct-cell" data-i18n="ct_files"></div><div class="ct-cell"><span class="ct-check">✓</span></div><div class="ct-cell"><span class="ct-check">✓</span></div><div class="ct-cell"><span class="ct-check">✓</span></div></div>
-    <!-- Warnings -->
-    <div class="ct-section" data-i18n="ct_sec2"></div>
-    <div class="ct-row"><div class="ct-cell" data-i18n="ct_warnings"></div><div class="ct-cell"><span class="ct-val" data-i18n="ct_basic"></span></div><div class="ct-cell"><span class="ct-val" data-i18n="ct_full"></span></div><div class="ct-cell"><span class="ct-val" data-i18n="ct_full"></span></div></div>
-    <div class="ct-row"><div class="ct-cell" data-i18n="ct_urgency"></div><div class="ct-cell"><span class="ct-check">✓</span></div><div class="ct-cell"><span class="ct-check">✓</span></div><div class="ct-cell"><span class="ct-check">✓</span></div></div>
-    <!-- Team -->
-    <div class="ct-section" data-i18n="ct_sec3"></div>
-    <div class="ct-row"><div class="ct-cell" data-i18n="ct_team_members"></div><div class="ct-cell"><span class="ct-cross">—</span></div><div class="ct-cell"><span class="ct-val" data-i18n="ct_pro_team"></span></div><div class="ct-cell"><span class="ct-val" data-i18n="ct_unlimited"></span></div></div>
-    <div class="ct-row"><div class="ct-cell" data-i18n="ct_roles"></div><div class="ct-cell"><span class="ct-cross">—</span></div><div class="ct-cell"><span class="ct-cross">—</span></div><div class="ct-cell"><span class="ct-check">✓</span></div></div>
-    <div class="ct-row"><div class="ct-cell" data-i18n="ct_api"></div><div class="ct-cell"><span class="ct-cross">—</span></div><div class="ct-cell"><span class="ct-cross">—</span></div><div class="ct-cell"><span class="ct-check">✓</span></div></div>
-    <!-- Support -->
-    <div class="ct-section" data-i18n="ct_sec4"></div>
-    <div class="ct-row"><div class="ct-cell" data-i18n="ct_support"></div><div class="ct-cell"><span class="ct-val" data-i18n="ct_email"></span></div><div class="ct-cell"><span class="ct-val" data-i18n="ct_email"></span></div><div class="ct-cell"><span class="ct-val" data-i18n="ct_priority_sup"></span></div></div>
-    <div class="ct-row"><div class="ct-cell" data-i18n="ct_account_mgr"></div><div class="ct-cell"><span class="ct-cross">—</span></div><div class="ct-cell"><span class="ct-cross">—</span></div><div class="ct-cell"><span class="ct-check">✓</span></div></div>
+    <div class="ct-section" data-i18n="ct_sec1">Müvekkil ve Dava Yönetimi</div>
+    <div class="ct-row"><div class="ct-cell" data-i18n="ct_clients">Müvekkil sınırı</div><div class="ct-cell"><span class="ct-val" data-i18n="ct_solo_clients">5</span></div><div class="ct-cell"><span class="ct-check">✓</span></div><div class="ct-cell"><span class="ct-check">✓</span></div></div>
+    <div class="ct-row"><div class="ct-cell" data-i18n="ct_cases">Dava sınırı</div><div class="ct-cell"><span class="ct-val" data-i18n="ct_solo_cases">10</span></div><div class="ct-cell"><span class="ct-check">✓</span></div><div class="ct-cell"><span class="ct-check">✓</span></div></div>
+    <div class="ct-row"><div class="ct-cell" data-i18n="ct_subcases">Alt dava hiyerarşisi</div><div class="ct-cell"><span class="ct-cross">—</span></div><div class="ct-cell"><span class="ct-check">✓</span></div><div class="ct-cell"><span class="ct-check">✓</span></div></div>
+    <div class="ct-row"><div class="ct-cell" data-i18n="ct_timeline">Aktivite zaman çizelgesi</div><div class="ct-cell"><span class="ct-check">✓</span></div><div class="ct-cell"><span class="ct-check">✓</span></div><div class="ct-cell"><span class="ct-check">✓</span></div></div>
+    <div class="ct-row"><div class="ct-cell" data-i18n="ct_files">Dosya yükleme</div><div class="ct-cell"><span class="ct-check">✓</span></div><div class="ct-cell"><span class="ct-check">✓</span></div><div class="ct-cell"><span class="ct-check">✓</span></div></div>
+    <div class="ct-section" data-i18n="ct_sec2">Uyarılar ve Terminler</div>
+    <div class="ct-row"><div class="ct-cell" data-i18n="ct_warnings">Uyarı sistemi</div><div class="ct-cell"><span class="ct-val" data-i18n="ct_basic">Temel</span></div><div class="ct-cell"><span class="ct-val" data-i18n="ct_full">Tam</span></div><div class="ct-cell"><span class="ct-val" data-i18n="ct_full">Tam</span></div></div>
+    <div class="ct-row"><div class="ct-cell" data-i18n="ct_urgency">Aciliyet göstergeleri</div><div class="ct-cell"><span class="ct-check">✓</span></div><div class="ct-cell"><span class="ct-check">✓</span></div><div class="ct-cell"><span class="ct-check">✓</span></div></div>
+    <div class="ct-section" data-i18n="ct_sec3">Takım ve İşbirliği</div>
+    <div class="ct-row"><div class="ct-cell" data-i18n="ct_team_members">Takım üyeleri</div><div class="ct-cell"><span class="ct-cross">—</span></div><div class="ct-cell"><span class="ct-val" data-i18n="ct_pro_team">3</span></div><div class="ct-cell"><span class="ct-val" data-i18n="ct_unlimited">Sınırsız</span></div></div>
+    <div class="ct-row"><div class="ct-cell" data-i18n="ct_roles">Rol izinleri</div><div class="ct-cell"><span class="ct-cross">—</span></div><div class="ct-cell"><span class="ct-cross">—</span></div><div class="ct-cell"><span class="ct-check">✓</span></div></div>
+    <div class="ct-row"><div class="ct-cell" data-i18n="ct_api">API erişimi</div><div class="ct-cell"><span class="ct-cross">—</span></div><div class="ct-cell"><span class="ct-cross">—</span></div><div class="ct-cell"><span class="ct-check">✓</span></div></div>
+    <div class="ct-section" data-i18n="ct_sec4">Destek ve Entegrasyonlar</div>
+    <div class="ct-row"><div class="ct-cell" data-i18n="ct_support">Destek</div><div class="ct-cell"><span class="ct-val" data-i18n="ct_email">E-posta</span></div><div class="ct-cell"><span class="ct-val" data-i18n="ct_email">E-posta</span></div><div class="ct-cell"><span class="ct-val" data-i18n="ct_priority_sup">Öncelikli</span></div></div>
+    <div class="ct-row"><div class="ct-cell" data-i18n="ct_account_mgr">Özel hesap yöneticisi</div><div class="ct-cell"><span class="ct-cross">—</span></div><div class="ct-cell"><span class="ct-cross">—</span></div><div class="ct-cell"><span class="ct-check">✓</span></div></div>
   </div>
 </div>
 
-<!-- Trust strip -->
+<!-- TRUST -->
 <div class="trust-strip">
-  <div class="trust-item"><span class="trust-icon">🔒</span><span data-i18n="trust_ssl"></span></div>
-  <div class="trust-item"><span class="trust-icon">🛡</span><span data-i18n="trust_soc2"></span></div>
-  <div class="trust-item"><span class="trust-icon">🌍</span><span data-i18n="trust_gdpr"></span></div>
-  <div class="trust-item"><span class="trust-icon">💳</span><span data-i18n="trust_stripe"></span></div>
-  <div class="trust-item"><span class="trust-icon">↩</span><span data-i18n="trust_refund"></span></div>
+  <div class="trust-item"><span class="trust-icon">🔒</span><span data-i18n="trust_ssl">256-bit SSL Şifreleme</span></div>
+  <div class="trust-item"><span class="trust-icon">🛡</span><span data-i18n="trust_soc2">SOC 2 Uyumlu</span></div>
+  <div class="trust-item"><span class="trust-icon">🌍</span><span data-i18n="trust_gdpr">GDPR & KVKK Uyumlu</span></div>
+  <div class="trust-item"><span class="trust-icon">💳</span><span data-i18n="trust_stripe">Stripe ile Ödeme</span></div>
+  <div class="trust-item"><span class="trust-icon">↩</span><span data-i18n="trust_refund">30 Gün Para İadesi</span></div>
 </div>
 
 <!-- FAQ -->
 <div class="faq-section">
-  <h2 class="faq-title" data-i18n="faq_title"></h2>
+  <h2 class="faq-title" data-i18n="faq_title">Sıkça Sorulan Sorular</h2>
   <div id="faq-list"></div>
 </div>
 
-<!-- Payment Modal -->
+<!-- MODAL -->
 <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
   <div class="modal-box" id="modal-box">
     <div class="modal-header">
-      <h2 id="modal-title" data-i18n="checkout_title"></h2>
+      <h2 id="modal-title" data-i18n="checkout_title">Ödeme</h2>
       <button class="modal-close" onclick="closeModal()">✕</button>
     </div>
     <div class="modal-body" id="modal-body"></div>
@@ -347,221 +333,150 @@ nav{position:sticky;top:0;z-index:500;padding:0 48px;height:68px;display:flex;al
 </div>
 
 <script>
-// ══════════════════════════════════════════════════════════════
-// i18n
-// ══════════════════════════════════════════════════════════════
 const T={
   tr:{
-    nav_features:'Özellikler', nav_how:'Nasıl Çalışır', nav_pricing:'Fiyatlandırma',
-    nav_signin:'Giriş Yap', nav_getstarted:'Başlayın →',
-    price_tag:'✦ ŞEFFAF FİYATLANDIRMA',
-    price_h1:'Her büro için', price_h2:'sade planlar',
+    nav_features:'Özellikler',nav_how:'Nasıl Çalışır',nav_pricing:'Fiyatlandırma',
+    nav_signin:'Giriş Yap',nav_getstarted:'Başlayın →',
+    price_tag:'✦ ŞEFFAF FİYATLANDIRMA',price_h1:'Her büro için',price_h2:'sade planlar',
     price_sub:'14 günlük ücretsiz deneme. Kredi kartı gerekmez. Uzun vadeli taahhüt yok.',
-    billing_monthly:'Aylık', billing_annual:'Yıllık', save_badge:'%25\'e kadar tasarruf',
+    billing_monthly:'Aylık',billing_annual:'Yıllık',save_badge:"%25'e kadar tasarruf",
     per_month:'/ ay',
     solo_desc:'Bireysel avukatlar ve küçük bürolar için idealdir.',
-    solo_clients:'5\'e kadar', feat_clients:'müvekkil',
-    solo_cases:'10\'a kadar', feat_cases:'dava',
-    feat_basic_warn:'Temel uyarı sistemi', feat_timeline:'Aktivite zaman çizelgesi',
-    feat_file_upload:'Dosya yükleme (dava başına)',
-    feat_subcases:'Alt dava hiyerarşisi',
-    feat_priority:'Öncelikli destek', feat_team:'Takım üyeleri', feat_api:'API erişimi',
-    solo_cta:'Ücretsiz Başla',
-    most_popular:'EN POPÜLER',
+    solo_clients:"5'e kadar",feat_clients:'müvekkil',solo_cases:"10'a kadar",feat_cases:'dava',
+    feat_basic_warn:'Temel uyarı sistemi',feat_timeline:'Aktivite zaman çizelgesi',
+    feat_file_upload:'Dosya yükleme',feat_subcases:'Alt dava hiyerarşisi',
+    feat_priority:'Öncelikli destek',feat_team:'Takım üyeleri',feat_api:'API erişimi',
+    solo_cta:'Ücretsiz Başla',most_popular:'EN POPÜLER',
     pro_desc:'Büyüyen ve birden fazla aktif dava olan bürolar için.',
-    feat_unlimited_clients:'Sınırsız müvekkil',
-    feat_unlimited_cases:'Sınırsız dava',
-    feat_full_warn:'Tam uyarı sistemi',
-    pro_team:'3\'e kadar', feat_team_members:'takım üyesi',
+    feat_unlimited_clients:'Sınırsız müvekkil',feat_unlimited_cases:'Sınırsız dava',
+    feat_full_warn:'Tam uyarı sistemi',pro_team:"3'e kadar",feat_team_members:'takım üyesi',
     pro_cta:'14 Günlük Denemeyi Başlat',
     firm_desc:'Ekip işbirliği ve gelişmiş araçlara ihtiyaç duyan bürolar için.',
-    feat_everything_pro:'Pro\'daki her şey',
-    feat_unlimited_team:'Sınırsız takım üyeleri',
-    feat_roles:'Rol ve izin yönetimi',
-    feat_integrations:'Özel entegrasyonlar',
-    feat_account_mgr:'Özel hesap yöneticisi',
-    firm_cta:'14 Günlük Denemeyi Başlat',
-    compare_show:'↓ Tüm özellikleri karşılaştır',
-    compare_hide:'↑ Karşılaştırmayı gizle',
-    ct_feature:'Özellik', ct_sec1:'Müvekkil ve Dava Yönetimi',
-    ct_clients:'Müvekkil sınırı', ct_solo_clients:'5',
-    ct_cases:'Dava sınırı', ct_solo_cases:'10',
-    ct_subcases:'Alt dava hiyerarşisi', ct_timeline:'Aktivite zaman çizelgesi',
-    ct_files:'Dosya yükleme',
-    ct_sec2:'Uyarılar ve Terminler',
-    ct_warnings:'Uyarı sistemi', ct_basic:'Temel', ct_full:'Tam',
-    ct_urgency:'Aciliyet göstergeleri',
-    ct_sec3:'Takım ve İşbirliği',
-    ct_team_members:'Takım üyeleri', ct_pro_team:'3', ct_unlimited:'Sınırsız',
-    ct_roles:'Rol izinleri', ct_api:'API erişimi',
-    ct_sec4:'Destek ve Entegrasyonlar',
-    ct_support:'Destek', ct_email:'E-posta', ct_priority_sup:'Öncelikli (4sa)',
-    ct_account_mgr:'Özel hesap yöneticisi',
-    trust_ssl:'256-bit SSL Şifreleme', trust_soc2:'SOC 2 Uyumlu',
-    trust_gdpr:'GDPR & KVKK Uyumlu', trust_stripe:'Stripe ile Ödeme',
-    trust_refund:'30 Gün Para İadesi',
+    feat_everything_pro:"Pro'daki her şey",feat_unlimited_team:'Sınırsız takım üyeleri',
+    feat_roles:'Rol ve izin yönetimi',feat_integrations:'Özel entegrasyonlar',
+    feat_account_mgr:'Özel hesap yöneticisi',firm_cta:'14 Günlük Denemeyi Başlat',
+    compare_show:'↓ Tüm özellikleri karşılaştır',compare_hide:'↑ Karşılaştırmayı gizle',
+    ct_feature:'Özellik',ct_sec1:'Müvekkil ve Dava Yönetimi',
+    ct_clients:'Müvekkil sınırı',ct_solo_clients:'5',ct_cases:'Dava sınırı',ct_solo_cases:'10',
+    ct_subcases:'Alt dava hiyerarşisi',ct_timeline:'Aktivite zaman çizelgesi',ct_files:'Dosya yükleme',
+    ct_sec2:'Uyarılar ve Terminler',ct_warnings:'Uyarı sistemi',ct_basic:'Temel',ct_full:'Tam',ct_urgency:'Aciliyet göstergeleri',
+    ct_sec3:'Takım ve İşbirliği',ct_team_members:'Takım üyeleri',ct_pro_team:'3',ct_unlimited:'Sınırsız',
+    ct_roles:'Rol izinleri',ct_api:'API erişimi',
+    ct_sec4:'Destek ve Entegrasyonlar',ct_support:'Destek',ct_email:'E-posta',ct_priority_sup:'Öncelikli (4sa)',ct_account_mgr:'Özel hesap yöneticisi',
+    trust_ssl:'256-bit SSL Şifreleme',trust_soc2:'SOC 2 Uyumlu',trust_gdpr:'GDPR & KVKK Uyumlu',trust_stripe:'Stripe ile Ödeme',trust_refund:'30 Gün Para İadesi',
     faq_title:'Sıkça Sorulan Sorular',
     faqs:[
       {q:'Sonradan plan değiştirebilir miyim?',a:'Evet, istediğiniz zaman yükseltme veya düşürme yapabilirsiniz. Yükseltmeler anında uygulanır; düşürme bir sonraki fatura döneminde geçerli olur.'},
-      {q:'14 günlük ücretsiz deneme gerçek mi?',a:'Evet. Kredi kartı bilgisi gerekmeden Pro veya Firm planını tam özelliklerle 14 gün kullanırsınız. Deneme sonrasında ödeme bilgisi girilmezse otomatik olarak Solo planına geçirilirsiniz.'},
+      {q:"14 günlük ücretsiz deneme gerçek mi?",a:"Evet. Kredi kartı bilgisi gerekmeden Pro veya Firm planını tam özelliklerle 14 gün kullanırsınız. Deneme sonrasında ödeme bilgisi girilmezse otomatik olarak Solo planına geçirilirsiniz."},
       {q:'Hangi ödeme yöntemleri kabul ediliyor?',a:'Visa, MasterCard, American Express ve yerel ödeme yöntemlerini destekliyoruz. Tüm ödemeler Stripe altyapısıyla güvenli şekilde işlenir.'},
-      {q:'İstediğimde iptal edebilir miyim?',a:'Evet, bağlayıcı taahhüt yoktur. İptal için destek ekibiyle iletişime geçmenize gerek kalmadan panelinizdeki Ayarlar bölümünden iptal edebilirsiniz.'},
-      {q:'Müvekkil verilerimin güvenliği nasıl sağlanıyor?',a:'256-bit SSL şifreleme, SOC 2 uyumlu altyapı ve düzenli güvenlik denetimleriyle verileriniz her zaman korunmaktadır. Türkiye\'den kullanıcılar için KVKK gereksinimlerine tam uygunluk sağlıyoruz.'},
+      {q:"İstediğimde iptal edebilir miyim?",a:"Evet, bağlayıcı taahhüt yoktur. İptal için destek ekibiyle iletişime geçmenize gerek kalmadan panelinizdeki Ayarlar bölümünden iptal edebilirsiniz."},
+      {q:"Müvekkil verilerimin güvenliği nasıl sağlanıyor?",a:"256-bit SSL şifreleme, SOC 2 uyumlu altyapı ve düzenli güvenlik denetimleriyle verileriniz korunmaktadır. Türkiye'den kullanıcılar için KVKK gereksinimlerine tam uygunluk sağlıyoruz."},
       {q:'Baro veya derneklere indirim var mı?',a:'Evet, 10 veya daha fazla avukat için baro ve hukuk derneklerine özel indirim planları sunuyoruz. Detaylar için destek ekibimizle iletişime geçin.'}
     ],
-    checkout_title:'Ödeme',
-    step_account:'Hesap', step_billing:'Fatura', step_payment:'Ödeme',
-    os_subtotal:'Ara Toplam', os_discount:'İndirim', os_tax:'KDV (%18)', os_total:'Bugün Ödenecek',
+    checkout_title:'Ödeme',step_account:'Hesap',step_billing:'Fatura',step_payment:'Ödeme',
+    os_subtotal:'Ara Toplam',os_discount:'İndirim',os_tax:'KDV (%18)',os_total:'Bugün Ödenecek',
     os_trial:'14 günlük ücretsiz deneme — deneme bitişinden sonra faturalanır',
-    field_fname:'Ad', field_lname:'Soyad', field_email:'E-posta Adresi',
-    field_firm:'Hukuk Bürosu / Şirket Adı',
-    ph_fname:'Ahmet', ph_lname:'Demir', ph_email:'siz@hukukburo.com', ph_firm:'Demir & Ortaklar',
+    field_fname:'Ad',field_lname:'Soyad',field_email:'E-posta',field_firm:'Büro Adı',
+    ph_fname:'Ahmet',ph_lname:'Demir',ph_email:'siz@hukukburo.com',ph_firm:'Demir & Ortaklar',
     btn_continue:'Devam Et →',
-    field_country:'Ülke', field_address:'Adres', field_city:'Şehir', field_postal:'Posta Kodu',
-    ph_address:'Adresiniz', ph_city:'İstanbul', ph_postal:'34000',
-    promo_label:'Promosyon Kodu', ph_promo:'Kodu girin', btn_apply:'Uygula',
-    promo_ok:'✓ Uygulanan kod — %10 indirim!', promo_err:'Geçersiz promosyon kodu.',
+    field_country:'Ülke',field_address:'Adres',field_city:'Şehir',field_postal:'Posta Kodu',
+    ph_address:'Adresiniz',ph_city:'İstanbul',ph_postal:'34000',
+    promo_label:'Promosyon Kodu',ph_promo:'Kodu girin',btn_apply:'Uygula',
+    promo_ok:'✓ LEXIS10 uygulandı — %10 indirim!',promo_err:'Geçersiz promosyon kodu.',
     btn_to_payment:'Ödemeye Geç →',
-    field_cardholder:'Kart Üzerindeki Ad', field_cardnum:'Kart Numarası',
-    field_expiry:'Son Kullanma Tarihi', field_cvv:'CVV',
-    ph_cardholder:'AHMET DEMİR', ph_cardnum:'0000 0000 0000 0000', ph_expiry:'AA/YY', ph_cvv:'•••',
-    btn_back:'← Geri',
-    sec_note:'🔒 256-bit SSL ile Güvende · Stripe Altyapısı',
-    success_icon:'🎉',
-    success_title:'Harika! Her şey hazır!',
+    field_cardholder:'Kart Üzerindeki Ad',field_cardnum:'Kart Numarası',field_expiry:'Son Kullanma',field_cvv:'CVV',
+    ph_cardholder:'AHMET DEMİR',ph_cardnum:'0000 0000 0000 0000',ph_expiry:'AA/YY',ph_cvv:'•••',
+    btn_back:'← Geri',sec_note:'🔒 256-bit SSL ile Güvende · Stripe Altyapısı',
+    success_icon:'🎉',success_title:'Harika! Her şey hazır!',
     success_sub_solo:'Solo planınız aktif edildi. Hemen kullanmaya başlayabilirsiniz.',
-    success_sub_paid:'Hesabınız başarıyla oluşturuldu. 14 günlük ücretsiz denemeniz başladı.',
-    success_plan:'Plan', success_trial_ends:'Deneme Bitiş Tarihi', success_billing:'İlk Fatura',
-    success_email:'E-posta',
-    btn_dashboard:'Panele Git →',
-    success_email_note:'Giriş bilgileri e-posta adresinize gönderildi.',
-    err_name:'Ad ve soyadınızı girin.', err_email:'Geçerli bir e-posta adresi girin.', err_firm:'Büro adını girin.',
-    err_country:'Ülke seçin.', err_address:'Adres girin.', err_city:'Şehir girin.',
-    err_cardholder:'Kart sahibi adını girin.', err_cardnum:'Geçerli kart numarası girin.',
-    err_expiry:'Son kullanma tarihi girin (AA/YY).', err_cvv:'CVV girin.',
+    success_sub_paid:"Hesabınız başarıyla oluşturuldu. 14 günlük ücretsiz denemeniz başladı.",
+    success_plan:'Plan',success_trial_ends:'Deneme Bitiş Tarihi',success_billing:'İlk Fatura',success_email:'E-posta',
+    btn_dashboard:'Panele Git →',success_email_note:'Giriş bilgileri e-posta adresinize gönderildi.',
+    err_name:'Ad ve soyadınızı girin.',err_email:'Geçerli bir e-posta adresi girin.',err_firm:'Büro adını girin.',
+    err_country:'Ülke seçin.',err_address:'Adres girin.',err_city:'Şehir girin.',
+    err_cardholder:'Kart sahibi adını girin.',err_cardnum:'Geçerli kart numarası girin.',err_expiry:'Son kullanma tarihi girin.',err_cvv:'CVV girin.',
     countries:['Türkiye','Almanya','Fransa','Birleşik Krallık','ABD','BAE','Diğer'],
-    free_plan:'Ücretsiz',
-    title:'Lexis — Fiyatlandırma'
+    free_plan:'Ücretsiz',title:'Lexis — Fiyatlandırma'
   },
   en:{
-    nav_features:'Features', nav_how:'How It Works', nav_pricing:'Pricing',
-    nav_signin:'Sign In', nav_getstarted:'Get Started →',
-    price_tag:'✦ TRANSPARENT PRICING',
-    price_h1:'Simple plans for', price_h2:'every practice',
+    nav_features:'Features',nav_how:'How It Works',nav_pricing:'Pricing',
+    nav_signin:'Sign In',nav_getstarted:'Get Started →',
+    price_tag:'✦ TRANSPARENT PRICING',price_h1:'Simple plans for',price_h2:'every practice',
     price_sub:'14-day free trial. No credit card required. No long-term commitment.',
-    billing_monthly:'Monthly', billing_annual:'Annual', save_badge:'Save up to 25%',
+    billing_monthly:'Monthly',billing_annual:'Annual',save_badge:'Save up to 25%',
     per_month:'/ mo',
     solo_desc:'Perfect for solo practitioners and small offices.',
-    solo_clients:'Up to 5', feat_clients:'clients',
-    solo_cases:'Up to 10', feat_cases:'cases',
-    feat_basic_warn:'Basic warning system', feat_timeline:'Activity timeline',
-    feat_file_upload:'File uploads (per case)',
-    feat_subcases:'Sub-case hierarchy',
-    feat_priority:'Priority support', feat_team:'Team members', feat_api:'API access',
-    solo_cta:'Get Started Free',
-    most_popular:'MOST POPULAR',
+    solo_clients:'Up to 5',feat_clients:'clients',solo_cases:'Up to 10',feat_cases:'cases',
+    feat_basic_warn:'Basic warning system',feat_timeline:'Activity timeline',
+    feat_file_upload:'File uploads',feat_subcases:'Sub-case hierarchy',
+    feat_priority:'Priority support',feat_team:'Team members',feat_api:'API access',
+    solo_cta:'Get Started Free',most_popular:'MOST POPULAR',
     pro_desc:'For growing firms with multiple active matters.',
-    feat_unlimited_clients:'Unlimited clients',
-    feat_unlimited_cases:'Unlimited cases',
-    feat_full_warn:'Full warning system',
-    pro_team:'Up to 3', feat_team_members:'team members',
+    feat_unlimited_clients:'Unlimited clients',feat_unlimited_cases:'Unlimited cases',
+    feat_full_warn:'Full warning system',pro_team:'Up to 3',feat_team_members:'team members',
     pro_cta:'Start 14-Day Free Trial',
     firm_desc:'For firms that need team collaboration and advanced tools.',
-    feat_everything_pro:'Everything in Pro',
-    feat_unlimited_team:'Unlimited team members',
-    feat_roles:'Role & permission management',
-    feat_integrations:'Custom integrations',
-    feat_account_mgr:'Dedicated account manager',
-    firm_cta:'Start 14-Day Free Trial',
-    compare_show:'↓ Compare all features',
-    compare_hide:'↑ Hide comparison',
-    ct_feature:'Feature', ct_sec1:'Client & Case Management',
-    ct_clients:'Client limit', ct_solo_clients:'5',
-    ct_cases:'Case limit', ct_solo_cases:'10',
-    ct_subcases:'Sub-case hierarchy', ct_timeline:'Activity timeline',
-    ct_files:'File uploads',
-    ct_sec2:'Warnings & Deadlines',
-    ct_warnings:'Warning system', ct_basic:'Basic', ct_full:'Full',
-    ct_urgency:'Urgency indicators',
-    ct_sec3:'Team & Collaboration',
-    ct_team_members:'Team members', ct_pro_team:'3', ct_unlimited:'Unlimited',
-    ct_roles:'Role permissions', ct_api:'API access',
-    ct_sec4:'Support & Integrations',
-    ct_support:'Support', ct_email:'Email', ct_priority_sup:'Priority (4h SLA)',
-    ct_account_mgr:'Dedicated account manager',
-    trust_ssl:'256-bit SSL Encryption', trust_soc2:'SOC 2 Compliant',
-    trust_gdpr:'GDPR & KVKK Ready', trust_stripe:'Powered by Stripe',
-    trust_refund:'30-Day Money Back Guarantee',
+    feat_everything_pro:'Everything in Pro',feat_unlimited_team:'Unlimited team members',
+    feat_roles:'Role & permission management',feat_integrations:'Custom integrations',
+    feat_account_mgr:'Dedicated account manager',firm_cta:'Start 14-Day Free Trial',
+    compare_show:'↓ Compare all features',compare_hide:'↑ Hide comparison',
+    ct_feature:'Feature',ct_sec1:'Client & Case Management',
+    ct_clients:'Client limit',ct_solo_clients:'5',ct_cases:'Case limit',ct_solo_cases:'10',
+    ct_subcases:'Sub-case hierarchy',ct_timeline:'Activity timeline',ct_files:'File uploads',
+    ct_sec2:'Warnings & Deadlines',ct_warnings:'Warning system',ct_basic:'Basic',ct_full:'Full',ct_urgency:'Urgency indicators',
+    ct_sec3:'Team & Collaboration',ct_team_members:'Team members',ct_pro_team:'3',ct_unlimited:'Unlimited',
+    ct_roles:'Role permissions',ct_api:'API access',
+    ct_sec4:'Support & Integrations',ct_support:'Support',ct_email:'Email',ct_priority_sup:'Priority (4h SLA)',ct_account_mgr:'Dedicated account manager',
+    trust_ssl:'256-bit SSL Encryption',trust_soc2:'SOC 2 Compliant',trust_gdpr:'GDPR & KVKK Ready',trust_stripe:'Powered by Stripe',trust_refund:'30-Day Money Back',
     faq_title:'Frequently Asked Questions',
     faqs:[
       {q:'Can I change plans later?',a:'Yes, you can upgrade or downgrade at any time. Upgrades take effect immediately; downgrades apply at the next billing cycle.'},
-      {q:'Is there really a 14-day free trial?',a:'Yes. You get full access to Pro or Firm features for 14 days — no credit card required. If you don\'t add a payment method after the trial, you\'re automatically moved to the Solo plan.'},
+      {q:"Is there really a 14-day free trial?",a:"Yes. You get full access to Pro or Firm features for 14 days — no credit card required. If you don't add a payment method after the trial, you're automatically moved to the Solo plan."},
       {q:'What payment methods do you accept?',a:'We accept Visa, MasterCard, American Express, and local payment methods. All payments are processed securely through Stripe.'},
       {q:'Can I cancel anytime?',a:'Yes, no commitment required. You can cancel directly from your dashboard Settings page — no need to contact support.'},
-      {q:'How is my client data kept safe?',a:'256-bit SSL encryption, SOC 2 compliant infrastructure, and regular security audits keep your data protected at all times. We are fully compliant with GDPR and KVKK requirements.'},
-      {q:'Do you offer discounts for bar associations?',a:'Yes, we offer special group pricing for bar associations and law societies with 10 or more attorneys. Contact our team for details.'}
+      {q:'How is my client data kept safe?',a:'256-bit SSL encryption, SOC 2 compliant infrastructure, and regular security audits keep your data protected. We are fully compliant with GDPR and KVKK requirements.'},
+      {q:'Do you offer discounts for bar associations?',a:'Yes, we offer special group pricing for bar associations with 10 or more attorneys. Contact our team for details.'}
     ],
-    checkout_title:'Checkout',
-    step_account:'Account', step_billing:'Billing', step_payment:'Payment',
-    os_subtotal:'Subtotal', os_discount:'Discount', os_tax:'Tax (18% VAT)', os_total:'Total Today',
+    checkout_title:'Checkout',step_account:'Account',step_billing:'Billing',step_payment:'Payment',
+    os_subtotal:'Subtotal',os_discount:'Discount',os_tax:'Tax (18% VAT)',os_total:'Total Today',
     os_trial:'14-day free trial — billed after trial ends',
-    field_fname:'First Name', field_lname:'Last Name', field_email:'Email Address',
-    field_firm:'Law Firm / Company Name',
-    ph_fname:'Ahmet', ph_lname:'Demir', ph_email:'you@lawfirm.com', ph_firm:'Demir & Associates',
+    field_fname:'First Name',field_lname:'Last Name',field_email:'Email Address',field_firm:'Firm Name',
+    ph_fname:'John',ph_lname:'Smith',ph_email:'you@lawfirm.com',ph_firm:'Smith & Associates',
     btn_continue:'Continue →',
-    field_country:'Country', field_address:'Address', field_city:'City', field_postal:'Postal Code',
-    ph_address:'Your address', ph_city:'Istanbul', ph_postal:'34000',
-    promo_label:'Promo Code', ph_promo:'Enter code', btn_apply:'Apply',
-    promo_ok:'✓ LEXIS10 applied — 10% discount!', promo_err:'Invalid promo code.',
+    field_country:'Country',field_address:'Address',field_city:'City',field_postal:'Postal Code',
+    ph_address:'Your address',ph_city:'Istanbul',ph_postal:'34000',
+    promo_label:'Promo Code',ph_promo:'Enter code',btn_apply:'Apply',
+    promo_ok:'✓ LEXIS10 applied — 10% discount!',promo_err:'Invalid promo code.',
     btn_to_payment:'Proceed to Payment →',
-    field_cardholder:'Cardholder Name', field_cardnum:'Card Number',
-    field_expiry:'Expiry Date', field_cvv:'CVV',
-    ph_cardholder:'AHMET DEMIR', ph_cardnum:'0000 0000 0000 0000', ph_expiry:'MM/YY', ph_cvv:'•••',
-    btn_back:'← Back',
-    sec_note:'🔒 Secured by 256-bit SSL · Powered by Stripe',
-    success_icon:'🎉',
-    success_title:"You're all set!",
+    field_cardholder:'Cardholder Name',field_cardnum:'Card Number',field_expiry:'Expiry Date',field_cvv:'CVV',
+    ph_cardholder:'JOHN SMITH',ph_cardnum:'0000 0000 0000 0000',ph_expiry:'MM/YY',ph_cvv:'•••',
+    btn_back:'← Back',sec_note:'🔒 Secured by 256-bit SSL · Powered by Stripe',
+    success_icon:'🎉',success_title:"You're all set!",
     success_sub_solo:'Your Solo plan is active. You can start right away.',
-    success_sub_paid:'Your account is ready. Your 14-day free trial has started.',
-    success_plan:'Plan', success_trial_ends:'Trial Ends', success_billing:'First Billing',
-    success_email:'Email',
-    btn_dashboard:'Go to Dashboard →',
-    success_email_note:'Login details have been sent to your email address.',
-    err_name:'Please enter your first and last name.', err_email:'Please enter a valid email.',
-    err_firm:'Please enter your firm name.', err_country:'Please select a country.',
-    err_address:'Please enter your address.', err_city:'Please enter your city.',
-    err_cardholder:'Please enter cardholder name.', err_cardnum:'Please enter a valid card number.',
-    err_expiry:'Please enter expiry date (MM/YY).', err_cvv:'Please enter CVV.',
+    success_sub_paid:"Your account is ready. Your 14-day free trial has started.",
+    success_plan:'Plan',success_trial_ends:'Trial Ends',success_billing:'First Billing',success_email:'Email',
+    btn_dashboard:'Go to Dashboard →',success_email_note:'Login details have been sent to your email.',
+    err_name:'Please enter your name.',err_email:'Please enter a valid email.',err_firm:'Please enter your firm name.',
+    err_country:'Please select a country.',err_address:'Please enter your address.',err_city:'Please enter your city.',
+    err_cardholder:'Please enter cardholder name.',err_cardnum:'Please enter a valid card number.',err_expiry:'Please enter expiry date.',err_cvv:'Please enter CVV.',
     countries:['Turkey','Germany','France','United Kingdom','United States','UAE','Other'],
-    free_plan:'Free',
-    title:'Lexis — Pricing'
+    free_plan:'Free',title:'Lexis — Pricing'
   }
 };
+let lang=localStorage.getItem('lexis_lang')||'tr';
+let billingMode='monthly', compareOpen=false;
+const prices={Solo:{monthly:0,annual:0},Pro:{monthly:49,annual:37},Firm:{monthly:129,annual:97}};
+let selectedPlan='',selectedPrice=0,payStep=1,payData={},promoApplied=false;
 
-let lang = localStorage.getItem('lexis_lang')||'tr';
-let billingMode = 'monthly';
-let compareOpen = false;
-const prices = {Solo:{monthly:0,annual:0}, Pro:{monthly:49,annual:37}, Firm:{monthly:129,annual:97}};
-let selectedPlan='', selectedPrice=0, payStep=1, payData={}, promoApplied=false;
-
-// ── setLang ──
 function setLang(l){
   lang=l; localStorage.setItem('lexis_lang',l);
-  document.documentElement.lang=l;
-  document.title=T[l].title;
+  document.documentElement.lang=l; document.title=T[l].title;
   document.getElementById('btn-tr').classList.toggle('active',l==='tr');
   document.getElementById('btn-en').classList.toggle('active',l==='en');
-  const t=T[l];
-  document.querySelectorAll('[data-i18n]').forEach(el=>{
-    const k=el.getAttribute('data-i18n');
-    if(t[k]!==undefined) el.textContent=t[k];
-  });
+  document.querySelectorAll('[data-i18n]').forEach(el=>{const k=el.getAttribute('data-i18n');if(T[l][k]!==undefined)el.textContent=T[l][k];});
   buildFaq();
-  // re-render modal if open
   if(document.getElementById('modal-overlay').classList.contains('show')) renderPayStep();
 }
-
-// ── Billing toggle ──
 function setBilling(m){
   billingMode=m;
   document.getElementById('lbl-monthly').classList.toggle('active',m==='monthly');
@@ -571,229 +486,63 @@ function setBilling(m){
   document.getElementById('firm-price').textContent=prices.Firm[m];
 }
 function toggleBilling(){ setBilling(billingMode==='monthly'?'annual':'monthly'); }
-
-// ── Compare table ──
 function toggleCompare(){
   compareOpen=!compareOpen;
   document.getElementById('compare-table').classList.toggle('show',compareOpen);
   document.getElementById('compare-link').textContent=compareOpen?T[lang].compare_hide:T[lang].compare_show;
 }
-
-// ── FAQ ──
 function buildFaq(){
-  const faqs=T[lang].faqs;
   const el=document.getElementById('faq-list');
-  el.innerHTML=faqs.map((f,i)=>`
-    <div class="faq-item" id="faq-${i}">
-      <div class="faq-q" onclick="toggleFaq(${i})">${f.q}<span class="faq-arrow">⌄</span></div>
-      <div class="faq-a">${f.a}</div>
-    </div>`).join('');
+  el.innerHTML=T[lang].faqs.map((f,i)=>`<div class="faq-item" id="faq-${i}"><div class="faq-q" onclick="toggleFaq(${i})">${f.q}<span class="faq-arrow">⌄</span></div><div class="faq-a">${f.a}</div></div>`).join('');
 }
-function toggleFaq(i){
-  document.querySelectorAll('.faq-item').forEach((el,j)=>el.classList.toggle('open',j===i&&!el.classList.contains('open')));
-}
-
-// ── Modal ──
-function openPayment(plan, price){
-  selectedPlan=plan; selectedPrice=price; payStep=1; payData={}; promoApplied=false;
-  document.getElementById('modal-overlay').classList.add('show');
-  renderPayStep();
-}
+function toggleFaq(i){ document.querySelectorAll('.faq-item').forEach((el,j)=>el.classList.toggle('open',j===i&&!el.classList.contains('open'))); }
+function openPayment(plan,price){selectedPlan=plan;selectedPrice=price;payStep=1;payData={};promoApplied=false;document.getElementById('modal-overlay').classList.add('show');renderPayStep();}
 function closeModal(){ document.getElementById('modal-overlay').classList.remove('show'); }
 function handleOverlayClick(e){ if(e.target===document.getElementById('modal-overlay')) closeModal(); }
-
 function orderSummaryHTML(){
   const t=T[lang];
   if(selectedPrice===0) return `<div class="order-summary"><div class="os-plan"><div><div class="os-plan-name">${selectedPlan}</div><div class="os-plan-per">${t.free_plan}</div></div></div></div>`;
-  const sub=selectedPrice;
-  const disc=promoApplied?Math.round(sub*.1):0;
-  const taxable=sub-disc;
-  const tax=Math.round(taxable*.18*100)/100;
-  const total=(taxable+tax).toFixed(2);
-  const period=T[lang].per_month;
-  return `<div class="order-summary">
-    <div class="os-plan"><div><div class="os-plan-name">${selectedPlan}</div><div class="os-plan-per">$${selectedPrice} ${period}</div></div></div>
-    <div class="os-rows">
-      <div class="os-row"><span>${t.os_subtotal}</span><span>$${sub.toFixed(2)}</span></div>
-      ${promoApplied?`<div class="os-row" style="color:var(--ok)"><span>${t.os_discount}</span><span>-$${disc.toFixed(2)}</span></div>`:''}
-      <div class="os-row"><span>${t.os_tax}</span><span>$${tax}</span></div>
-      <div class="os-row total"><span>${t.os_total}</span><span>$${total}</span></div>
-    </div>
-    <div class="os-trial">★ ${t.os_trial}</div>
-  </div>`;
+  const sub=selectedPrice,disc=promoApplied?Math.round(sub*.1):0,taxable=sub-disc,tax=Math.round(taxable*.18*100)/100,total=(taxable+tax).toFixed(2);
+  return `<div class="order-summary"><div class="os-plan"><div><div class="os-plan-name">${selectedPlan}</div><div class="os-plan-per">$${selectedPrice} ${t.per_month}</div></div></div><div class="os-rows"><div class="os-row"><span>${t.os_subtotal}</span><span>$${sub.toFixed(2)}</span></div>${promoApplied?`<div class="os-row" style="color:var(--ok)"><span>${t.os_discount}</span><span>-$${disc.toFixed(2)}</span></div>`:''}<div class="os-row"><span>${t.os_tax}</span><span>$${tax}</span></div><div class="os-row total"><span>${t.os_total}</span><span>$${total}</span></div></div><div class="os-trial">★ ${t.os_trial}</div></div>`;
 }
-
 function stepIndicatorHTML(){
-  const t=T[lang];
-  const steps=[t.step_account, t.step_billing, t.step_payment];
-  return `<div class="step-indicator">
-    ${steps.map((s,i)=>{
-      const n=i+1;
-      const done=n<payStep, active=n===payStep;
-      return `${i>0?`<div class="si-line${n<=payStep?' done':''}"></div>`:''}
-      <div class="si-step${done?' done':active?' active':''}">
-        <div class="si-circle">${done?'✓':n}</div>
-        <div class="si-label">${s}</div>
-      </div>`;
-    }).join('')}
-  </div>`;
+  const t=T[lang],steps=[t.step_account,t.step_billing,t.step_payment];
+  return `<div class="step-indicator">${steps.map((s,i)=>{const n=i+1,done=n<payStep,active=n===payStep;return `${i>0?`<div class="si-line${n<=payStep?' done':''}"></div>`:''}<div class="si-step${done?' done':active?' active':''}"><div class="si-circle">${done?'✓':n}</div><div class="si-label">${s}</div></div>`;}).join('')}</div>`;
 }
-
 function renderPayStep(){
-  const t=T[lang];
-  const body=document.getElementById('modal-body');
+  const t=T[lang],body=document.getElementById('modal-body');
   document.getElementById('modal-title').textContent=t.checkout_title;
-
   if(payStep===0){
-    // Success
     const isFree=selectedPrice===0;
     const trialEnd=new Date(); trialEnd.setDate(trialEnd.getDate()+14);
     const firstBill=new Date(); firstBill.setDate(firstBill.getDate()+14);
     const fmt=d=>d.toLocaleDateString(lang==='tr'?'tr-TR':'en-US',{day:'numeric',month:'long',year:'numeric'});
-    body.innerHTML=`<div class="success-screen">
-      <span class="success-icon">${t.success_icon}</span>
-      <h2 class="success-title">${t.success_title}</h2>
-      <p class="success-sub">${isFree?t.success_sub_solo:t.success_sub_paid}</p>
-      <div class="success-details">
-        <div class="sd-row"><span>${t.success_plan}</span><span>${selectedPlan}</span></div>
-        ${!isFree?`<div class="sd-row"><span>${t.success_trial_ends}</span><span>${fmt(trialEnd)}</span></div>
-        <div class="sd-row"><span>${t.success_billing}</span><span>$${(selectedPrice*1.18).toFixed(2)}</span></div>`:''}
-        <div class="sd-row"><span>${t.success_email}</span><span>${payData.email||'—'}</span></div>
-      </div>
-      <button class="pay-btn" onclick="window.location.href='lawyer-dashboard.html'">${t.btn_dashboard}</button>
-      ${!isFree?`<div class="sec-note" style="margin-top:14px">${t.success_email_note}</div>`:''}
-    </div>`;
+    body.innerHTML=`<div class="success-screen"><span class="success-icon">${t.success_icon}</span><h2 class="success-title">${t.success_title}</h2><p class="success-sub">${isFree?t.success_sub_solo:t.success_sub_paid}</p><div class="success-details"><div class="sd-row"><span>${t.success_plan}</span><span>${selectedPlan}</span></div>${!isFree?`<div class="sd-row"><span>${t.success_trial_ends}</span><span>${fmt(trialEnd)}</span></div><div class="sd-row"><span>${t.success_billing}</span><span>$${(selectedPrice*1.18).toFixed(2)}</span></div>`:''}<div class="sd-row"><span>${t.success_email}</span><span>${payData.email||'—'}</span></div></div><button class="pay-btn" onclick="window.location.href='lawyer-dashboard.html'">${t.btn_dashboard}</button>${!isFree?`<div class="sec-note" style="margin-top:12px">${t.success_email_note}</div>`:''}</div>`;
     return;
   }
-
-  if(selectedPrice===0){
-    // Solo → skip to success
-    payStep=0; payData.email=payData.email||''; renderPayStep(); return;
-  }
-
+  if(selectedPrice===0){ payStep=0; renderPayStep(); return; }
   if(payStep===1){
-    body.innerHTML=stepIndicatorHTML()+orderSummaryHTML()+`
-    <div class="field-row">
-      <div class="field"><label>${t.field_fname}</label><input id="p-fname" placeholder="${t.ph_fname}"></div>
-      <div class="field"><label>${t.field_lname}</label><input id="p-lname" placeholder="${t.ph_lname}"></div>
-    </div>
-    <div class="field"><label>${t.field_email}</label><input id="p-email" type="email" placeholder="${t.ph_email}"></div>
-    <div class="field"><label>${t.field_firm}</label><input id="p-firm" placeholder="${t.ph_firm}"></div>
-    <button class="pay-btn" onclick="step1Next()">${t.btn_continue}</button>`;
-    if(payData.fname) document.getElementById('p-fname').value=payData.fname;
-    if(payData.lname) document.getElementById('p-lname').value=payData.lname;
-    if(payData.email) document.getElementById('p-email').value=payData.email;
-    if(payData.firm)  document.getElementById('p-firm').value=payData.firm;
+    body.innerHTML=stepIndicatorHTML()+orderSummaryHTML()+`<div class="field-row"><div class="field"><label>${t.field_fname}</label><input id="p-fname" placeholder="${t.ph_fname}"></div><div class="field"><label>${t.field_lname}</label><input id="p-lname" placeholder="${t.ph_lname}"></div></div><div class="field"><label>${t.field_email}</label><input id="p-email" type="email" placeholder="${t.ph_email}"></div><div class="field"><label>${t.field_firm}</label><input id="p-firm" placeholder="${t.ph_firm}"></div><button class="pay-btn" onclick="step1Next()">${t.btn_continue}</button>`;
+    ['fname','lname','email','firm'].forEach(k=>{if(payData[k]) document.getElementById('p-'+k).value=payData[k];});
   } else if(payStep===2){
-    const countryOpts=T[lang].countries.map(c=>`<option>${c}</option>`).join('');
-    body.innerHTML=stepIndicatorHTML()+orderSummaryHTML()+`
-    <button class="modal-back" onclick="goPayStep(1)">${t.btn_back}</button>
-    <div class="field"><label>${t.field_country}</label><select id="p-country">${countryOpts}</select></div>
-    <div class="field"><label>${t.field_address}</label><input id="p-address" placeholder="${t.ph_address}"></div>
-    <div class="field-row">
-      <div class="field"><label>${t.field_city}</label><input id="p-city" placeholder="${t.ph_city}"></div>
-      <div class="field"><label>${t.field_postal}</label><input id="p-postal" placeholder="${t.ph_postal}"></div>
-    </div>
-    <div class="field"><label>${t.promo_label}</label>
-      <div class="promo-row"><input id="p-promo" placeholder="${t.ph_promo}"><button onclick="applyPromo()">${t.btn_apply}</button></div>
-      <div class="promo-msg" id="promo-msg"></div>
-    </div>
-    <button class="pay-btn" onclick="step2Next()">${t.btn_to_payment}</button>`;
-    if(payData.country) document.getElementById('p-country').value=payData.country;
-    if(payData.address) document.getElementById('p-address').value=payData.address;
-    if(payData.city)    document.getElementById('p-city').value=payData.city;
-    if(payData.postal)  document.getElementById('p-postal').value=payData.postal;
-    if(promoApplied){const pm=document.getElementById('promo-msg'); pm.textContent=t.promo_ok; pm.className='promo-msg ok';}
+    const opts=T[lang].countries.map(c=>`<option>${c}</option>`).join('');
+    body.innerHTML=stepIndicatorHTML()+orderSummaryHTML()+`<button class="modal-back" onclick="goPayStep(1)">${t.btn_back}</button><div class="field"><label>${t.field_country}</label><select id="p-country">${opts}</select></div><div class="field"><label>${t.field_address}</label><input id="p-address" placeholder="${t.ph_address}"></div><div class="field-row"><div class="field"><label>${t.field_city}</label><input id="p-city" placeholder="${t.ph_city}"></div><div class="field"><label>${t.field_postal}</label><input id="p-postal" placeholder="${t.ph_postal}"></div></div><div class="field"><label>${t.promo_label}</label><div class="promo-row"><input id="p-promo" placeholder="${t.ph_promo}"><button onclick="applyPromo()">${t.btn_apply}</button></div><div class="promo-msg" id="promo-msg"></div></div><button class="pay-btn" onclick="step2Next()">${t.btn_to_payment}</button>`;
+    ['country','address','city','postal'].forEach(k=>{if(payData[k]) document.getElementById('p-'+k).value=payData[k];});
+    if(promoApplied){const pm=document.getElementById('promo-msg');pm.textContent=t.promo_ok;pm.className='promo-msg ok';}
   } else if(payStep===3){
-    const disc=promoApplied?Math.round(selectedPrice*.1):0;
-    const taxable=selectedPrice-disc;
-    const total=((taxable)*1.18).toFixed(2);
-    body.innerHTML=stepIndicatorHTML()+orderSummaryHTML()+`
-    <button class="modal-back" onclick="goPayStep(2)">${t.btn_back}</button>
-    <div class="card-icons">
-      <span class="card-icon">VISA</span>
-      <span class="card-icon">MC</span>
-      <span class="card-icon">AMEX</span>
-    </div>
-    <div class="field"><label>${t.field_cardholder}</label><input id="p-holder" placeholder="${t.ph_cardholder}" style="text-transform:uppercase"></div>
-    <div class="field"><label>${t.field_cardnum}</label><input id="p-cardnum" placeholder="${t.ph_cardnum}" maxlength="19" oninput="formatCard(this)"></div>
-    <div class="field-row">
-      <div class="field"><label>${t.field_expiry}</label><input id="p-expiry" placeholder="${t.ph_expiry}" maxlength="5" oninput="formatExpiry(this)"></div>
-      <div class="field"><label>${t.field_cvv}</label><input id="p-cvv" placeholder="${t.ph_cvv}" type="password" maxlength="4"></div>
-    </div>
-    <button class="pay-btn" id="pay-final-btn" onclick="finalPay()">🔒 ${t.os_total}: $${total}</button>
-    <div class="sec-note">${t.sec_note}</div>`;
+    const disc=promoApplied?Math.round(selectedPrice*.1):0,taxable=selectedPrice-disc,total=(taxable*1.18).toFixed(2);
+    body.innerHTML=stepIndicatorHTML()+orderSummaryHTML()+`<button class="modal-back" onclick="goPayStep(2)">${t.btn_back}</button><div class="card-icons"><span class="card-icon">VISA</span><span class="card-icon">MC</span><span class="card-icon">AMEX</span></div><div class="field"><label>${t.field_cardholder}</label><input id="p-holder" placeholder="${t.ph_cardholder}" style="text-transform:uppercase"></div><div class="field"><label>${t.field_cardnum}</label><input id="p-cardnum" placeholder="${t.ph_cardnum}" maxlength="19" oninput="formatCard(this)"></div><div class="field-row"><div class="field"><label>${t.field_expiry}</label><input id="p-expiry" placeholder="${t.ph_expiry}" maxlength="5" oninput="formatExpiry(this)"></div><div class="field"><label>${t.field_cvv}</label><input id="p-cvv" placeholder="${t.ph_cvv}" type="password" maxlength="4"></div></div><button class="pay-btn" id="pay-final-btn" onclick="finalPay()">🔒 ${t.os_total}: $${total}</button><div class="sec-note">${t.sec_note}</div>`;
   }
 }
-
-function step1Next(){
-  const t=T[lang];
-  const fname=document.getElementById('p-fname').value.trim();
-  const lname=document.getElementById('p-lname').value.trim();
-  const email=document.getElementById('p-email').value.trim();
-  const firm=document.getElementById('p-firm').value.trim();
-  if(!fname||!lname){alert(t.err_name);return;}
-  if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){alert(t.err_email);return;}
-  if(!firm){alert(t.err_firm);return;}
-  payData={...payData,fname,lname,email,firm};
-  goPayStep(2);
-}
-function step2Next(){
-  const t=T[lang];
-  const country=document.getElementById('p-country').value;
-  const address=document.getElementById('p-address').value.trim();
-  const city=document.getElementById('p-city').value.trim();
-  const postal=document.getElementById('p-postal').value.trim();
-  if(!country){alert(t.err_country);return;}
-  if(!address){alert(t.err_address);return;}
-  if(!city){alert(t.err_city);return;}
-  payData={...payData,country,address,city,postal};
-  goPayStep(3);
-}
-function goPayStep(s){ payStep=s; renderPayStep(); document.getElementById('modal-box').scrollTop=0; }
-
-function applyPromo(){
-  const t=T[lang];
-  const code=document.getElementById('p-promo').value.trim().toUpperCase();
-  const msg=document.getElementById('promo-msg');
-  if(code==='LEXIS10'){ promoApplied=true; msg.textContent=t.promo_ok; msg.className='promo-msg ok'; }
-  else { promoApplied=false; msg.textContent=t.promo_err; msg.className='promo-msg err'; }
-  // Refresh summary
-  const os=document.getElementById('modal-body').querySelector('.order-summary');
-  if(os){ const dummy=document.createElement('div'); dummy.innerHTML=orderSummaryHTML(); os.replaceWith(dummy.firstElementChild); }
-}
-
-function formatCard(el){
-  let v=el.value.replace(/\D/g,'').slice(0,16);
-  el.value=v.match(/.{1,4}/g)?.join(' ')||v;
-}
-function formatExpiry(el){
-  let v=el.value.replace(/\D/g,'').slice(0,4);
-  if(v.length>=3) v=v.slice(0,2)+'/'+v.slice(2);
-  el.value=v;
-}
-
-function finalPay(){
-  const t=T[lang];
-  const holder=document.getElementById('p-holder').value.trim();
-  const cardnum=document.getElementById('p-cardnum').value.replace(/\s/g,'');
-  const expiry=document.getElementById('p-expiry').value.trim();
-  const cvv=document.getElementById('p-cvv').value.trim();
-  if(!holder){alert(t.err_cardholder);return;}
-  if(cardnum.length<15){alert(t.err_cardnum);return;}
-  if(!expiry||expiry.length<5){alert(t.err_expiry);return;}
-  if(!cvv||cvv.length<3){alert(t.err_cvv);return;}
-  const btn=document.getElementById('pay-final-btn');
-  btn.disabled=true;
-  btn.innerHTML=`<div class="spinner-w"><div class="spinner"></div><span>${lang==='tr'?'İşleniyor…':'Processing…'}</span></div>`;
-  setTimeout(()=>{ payStep=0; renderPayStep(); },2000);
-}
-
-document.addEventListener('keydown',e=>{ if(e.key==='Escape') closeModal(); });
-
-// Init
-buildFaq();
-setLang(lang);
+function step1Next(){const t=T[lang];const fn=document.getElementById('p-fname').value.trim(),ln=document.getElementById('p-lname').value.trim(),em=document.getElementById('p-email').value.trim(),firm=document.getElementById('p-firm').value.trim();if(!fn||!ln){alert(t.err_name);return;}if(!em||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)){alert(t.err_email);return;}if(!firm){alert(t.err_firm);return;}payData={...payData,fname:fn,lname:ln,email:em,firm};goPayStep(2);}
+function step2Next(){const t=T[lang];const country=document.getElementById('p-country').value,address=document.getElementById('p-address').value.trim(),city=document.getElementById('p-city').value.trim(),postal=document.getElementById('p-postal').value.trim();if(!country){alert(t.err_country);return;}if(!address){alert(t.err_address);return;}if(!city){alert(t.err_city);return;}payData={...payData,country,address,city,postal};goPayStep(3);}
+function goPayStep(s){payStep=s;renderPayStep();document.getElementById('modal-box').scrollTop=0;}
+function applyPromo(){const t=T[lang];const code=document.getElementById('p-promo').value.trim().toUpperCase();const msg=document.getElementById('promo-msg');if(code==='LEXIS10'){promoApplied=true;msg.textContent=t.promo_ok;msg.className='promo-msg ok';}else{promoApplied=false;msg.textContent=t.promo_err;msg.className='promo-msg err';}const os=document.getElementById('modal-body').querySelector('.order-summary');if(os){const d=document.createElement('div');d.innerHTML=orderSummaryHTML();os.replaceWith(d.firstElementChild);}}
+function formatCard(el){let v=el.value.replace(/\D/g,'').slice(0,16);el.value=v.match(/.{1,4}/g)?.join(' ')||v;}
+function formatExpiry(el){let v=el.value.replace(/\D/g,'').slice(0,4);if(v.length>=3)v=v.slice(0,2)+'/'+v.slice(2);el.value=v;}
+function finalPay(){const t=T[lang];const holder=document.getElementById('p-holder').value.trim(),cardnum=document.getElementById('p-cardnum').value.replace(/\s/g,''),expiry=document.getElementById('p-expiry').value.trim(),cvv=document.getElementById('p-cvv').value.trim();if(!holder){alert(t.err_cardholder);return;}if(cardnum.length<15){alert(t.err_cardnum);return;}if(!expiry||expiry.length<5){alert(t.err_expiry);return;}if(!cvv||cvv.length<3){alert(t.err_cvv);return;}const btn=document.getElementById('pay-final-btn');btn.disabled=true;btn.innerHTML=`<div class="spinner-w"><div class="spinner"></div><span>${lang==='tr'?'İşleniyor…':'Processing…'}</span></div>`;setTimeout(()=>{payStep=0;renderPayStep();},1800);}
+document.addEventListener('keydown',e=>{if(e.key==='Escape')closeModal();});
+buildFaq(); setLang(lang);
 </script>
 </body>
 </html>
