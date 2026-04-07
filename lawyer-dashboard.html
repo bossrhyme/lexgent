@@ -58,7 +58,15 @@ body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif;min-he
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 .login-btn-main{width:100%;padding:11px;background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);font-family:'Sora',sans-serif;font-size:13px;font-weight:600;cursor:pointer;letter-spacing:.3px;transition:background .15s,transform .1s}
 .login-btn-main:hover{background:var(--accent2);transform:translateY(-1px)}
-.login-demo{font-size:10px;color:rgba(255,255,255,.45);text-align:center;margin-top:18px;font-family:'JetBrains Mono',monospace;line-height:1.8}
+.login-demo-cards{margin-top:18px;width:100%;display:flex;flex-direction:column;gap:7px}
+.demo-label{font-family:'JetBrains Mono',monospace;font-size:9px;color:rgba(255,255,255,.35);letter-spacing:1.5px;text-align:center;margin-bottom:4px;text-transform:uppercase}
+.demo-card{display:flex;align-items:center;gap:8px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.13);border-radius:8px;padding:9px 14px;cursor:pointer;transition:all .18s;font-family:'JetBrains Mono',monospace;font-size:11px}
+.demo-card:hover{background:rgba(255,255,255,.15);border-color:rgba(255,255,255,.28);transform:translateY(-1px)}
+.demo-role{font-size:8px;font-weight:700;letter-spacing:1.5px;padding:2px 7px;border-radius:4px;flex-shrink:0}
+.admin-role{background:rgba(201,168,76,.25);color:#e2c97e;border:1px solid rgba(201,168,76,.35)}
+.lawyer-role{background:rgba(5,150,105,.2);color:#6ee7b7;border:1px solid rgba(5,150,105,.3)}
+.demo-cred{color:rgba(255,255,255,.75);font-size:11px}
+.demo-sep{color:rgba(255,255,255,.25);font-size:11px}
 
 /* ── SIDEBAR ── */
 .sidebar{width:248px;min-height:100vh;background:var(--accent);display:flex;flex-direction:column;flex-shrink:0;position:relative}
@@ -301,7 +309,21 @@ body{background:var(--bg);color:var(--text);font-family:'Sora',sans-serif;min-he
       </div>
       <button class="login-btn-main" onclick="doLogin()" id="login-btn">Giriş Yap →</button>
     </div>
-    <p class="login-demo" id="demo-hint"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="cfaeaba2a6a18fa3aab7a6bce1aca0a2">[email&#160;protected]</a> / admin123 &nbsp;·&nbsp; <a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="94f5e2e1fff5e0d4f8f1ecfde7baf7fbf9">[email&#160;protected]</a> / avukat123</p>
+    <div class="login-demo-cards" id="demo-hint">
+      <p class="demo-label">Demo Hesaplar — Tıkla & Giriş Yap</p>
+      <div class="demo-card" onclick="fillDemo('admin@lexis.com','admin123')">
+        <span class="demo-role admin-role">ADMİN</span>
+        <span class="demo-cred">admin&#64;lexis.com</span>
+        <span class="demo-sep">/</span>
+        <span class="demo-cred">admin123</span>
+      </div>
+      <div class="demo-card" onclick="fillDemo('avukat@lexis.com','avukat123')">
+        <span class="demo-role lawyer-role">AVUKAT</span>
+        <span class="demo-cred">avukat&#64;lexis.com</span>
+        <span class="demo-sep">/</span>
+        <span class="demo-cred">avukat123</span>
+      </div>
+    </div>
   </div>
 </div>
 
@@ -553,6 +575,12 @@ let users=[
 
 let currentUser=null;
 
+function fillDemo(email, pass){
+  document.getElementById('li-email').value = email;
+  document.getElementById('li-pass').value = pass;
+  document.getElementById('login-err').style.display = 'none';
+  setTimeout(doLogin, 150);
+}
 function doLogin(){
   const email=(document.getElementById('li-email').value||'').trim().toLowerCase();
   const pass=document.getElementById('li-pass').value||'';
